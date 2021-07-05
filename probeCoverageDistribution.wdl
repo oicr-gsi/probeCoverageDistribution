@@ -1,27 +1,36 @@
 version 1.0
 
+import "imports/pull_bwaMem.wdl" as bwaMem
+
 workflow probeCoverageDistribution {
   input {
+    File fastqR1
+    File fastqR2
     File inputBed
-    File inputBam
-    String outputFileNamePrefix = basename(inputBam, '.bam') #I think this is to set the variable if not put as input
+    String outputFileNamePrefix = basename(fastqR1)
+  }
+  parameter_meta {
+    fastqR1: "fastq file for read 1"
+    fastqR2: "fastq file for read 2"
+    inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
+    outputFileNamePrefix: "Optional output prefix to prefix output file names with."
+  }
+  call bwaMem.bwaMem {
+    input:
+      fastqR1 = fastqR1,
+      fastqR2 = fastqR2,
+      outputFileNamePrefix = outputFileNamePrefix
   }
 
   call calculateProbeCoverageDistribution {
     input:
-      inputBam = inputBam,
+      inputBam = bwaMem.bwaMemBam,
       inputBed = inputBed,
       outputPrefix = outputFileNamePrefix
   }
 
   output {
     File coverageHistogram = calculateProbeCoverageDistribution.coverageHistogram
-  }
-
-  parameter_meta {
-    inputBam: "Input file bam."
-    inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
-    outputFileNamePrefix: "Output prefix to prefix output file names with."
   }
 
   meta {
