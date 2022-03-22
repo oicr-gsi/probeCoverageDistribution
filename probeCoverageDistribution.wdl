@@ -4,10 +4,13 @@ import "imports/pull_bwaMem.wdl" as bwaMem
 
 workflow probeCoverageDistribution {
   input {
-    File fastqR1
-    File fastqR2
+    File? fastqR1
+    File? fastqR2
+    File? bam
+    File? bamIndex
     File inputBed
-    String outputFileNamePrefix = basename(fastqR1)
+    String outputFileNamePrefix
+    String inputType
   }
   parameter_meta {
     fastqR1: "fastq file for read 1"
@@ -15,16 +18,22 @@ workflow probeCoverageDistribution {
     inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
     outputFileNamePrefix: "Optional output prefix to prefix output file names with."
   }
-  call bwaMem.bwaMem {
-    input:
-      fastqR1 = fastqR1,
-      fastqR2 = fastqR2,
-      outputFileNamePrefix = outputFileNamePrefix
+
+  if(inputType=="fastq" && defined(fastqR1) && defined(fastqR2)){
+    call bwaMem.bwaMem {
+      input:
+        fastqR1 = fastqR1,
+        fastqR2 = fastqR2,
+        outputFileNamePrefix = outputFileNamePrefix,
+        readGroups = "'@RG\\tID:ID\\tSM:SAMPLE'",
+        doTrim = false #TEST CHECK LATER
+    }
   }
 
   call calculateProbeCoverageDistribution {
     input:
-      inputBam = bwaMem.bwaMemBam,
+      inputBam = select_first([bwaMem.bwaMemBam,bam]),
+      inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
       inputBed = inputBed,
       outputPrefix = outputFileNamePrefix
   }
@@ -50,7 +59,7 @@ task calculateProbeCoverageDistribution {
     File inputBed
     Int jobMemory = 10
     Int timeout = 4
-    String outputPrefix = "OUTPUT" #check this
+    String outputPrefix
     String modules = "bedtools/2.27"
 
   }
@@ -80,7 +89,6 @@ task calculateProbeCoverageDistribution {
   runtime {
     memory: "~{jobMemory} GB"
     modules: "~{modules}"
-    #cpu:     "~{threads}"
     timeout: "~{timeout}"
   }
 
@@ -88,4 +96,3 @@ task calculateProbeCoverageDistribution {
     File coverageHistogram = "~{outputPrefix}.cvghist.txt"
   }
 }
-
