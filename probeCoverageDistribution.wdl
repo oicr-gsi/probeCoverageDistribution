@@ -8,14 +8,14 @@ workflow probeCoverageDistribution {
     File? fastqR2
     File? bam
     File? bamIndex
-    File inputBed
+    File bed
     String outputFileNamePrefix
     String inputType
   }
   parameter_meta {
     fastqR1: "fastq file for read 1"
     fastqR2: "fastq file for read 2"
-    inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
+    bed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
     outputFileNamePrefix: "Optional output prefix to prefix output file names with."
   }
 
@@ -34,7 +34,7 @@ workflow probeCoverageDistribution {
     input:
       inputBam = select_first([bwaMem.bwaMemBam,bam]),
       inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
-      inputBed = inputBed,
+      inputBed = bed,
       outputPrefix = outputFileNamePrefix
   }
 
