@@ -22,8 +22,8 @@ workflow probeCoverageDistribution {
   if(inputType=="fastq" && defined(fastqR1) && defined(fastqR2)){
     call bwaMem.bwaMem {
       input:
-        fastqR1 = fastqR1,
-        fastqR2 = fastqR2,
+        fastqR1 = select_first([fastqR1]),
+        fastqR2 = select_first([fastqR2]),
         outputFileNamePrefix = outputFileNamePrefix,
         readGroups = "'@RG\\tID:ID\\tSM:SAMPLE'",
         doTrim = false #TEST CHECK LATER
@@ -56,6 +56,7 @@ workflow probeCoverageDistribution {
 task calculateProbeCoverageDistribution {
   input {
     File inputBam
+    File inputBai
     File inputBed
     Int jobMemory = 10
     Int timeout = 4
@@ -66,6 +67,7 @@ task calculateProbeCoverageDistribution {
 
   parameter_meta {
     inputBam: "Input file (bam)."
+    inputBai: "index of the input .bam file"
     inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
     jobMemory: "Memory (in GB) allocated for job."
     outputPrefix: "Output prefix to prefix output file names with."
