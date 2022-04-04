@@ -133,8 +133,10 @@ task calculateProbeCoverageDistribution {
     bedtools coverage -hist \
     -a ~{inputBed} \
     -b ~{inputBam} \
-    -sorted ~{genomeFile} \
-    > "~{outputPrefix}.cvghist.txt" 
+    -sorted -g ~{genomeFile} \
+    > "~{outputPrefix}.cvghist.txt" || echo "Bedtools failed to produce output" \
+    | rm "~{outputPrefix}.cvghist.txt"
+    #use or "||" when command fails otherwise workflow succeeds on empty file
   >>>
 
   runtime {
