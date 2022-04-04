@@ -30,11 +30,17 @@ workflow probeCoverageDistribution {
     }
   }
 
+  call getGenomeFile {
+    input:
+      inputBam = select_first([bwaMem.bwaMemBam,bam])
+  }
+
   call calculateProbeCoverageDistribution {
     input:
       inputBam = select_first([bwaMem.bwaMemBam,bam]),
       inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
       inputBed = bed,
+      genomeFile = getGenomeFile.genomeFile,
       outputPrefix = outputFileNamePrefix
   }
 
@@ -53,11 +59,52 @@ workflow probeCoverageDistribution {
   }
 }
 
+task getGenomeFile {
+  input {
+    File inputBam
+    Int jobMemory = 10
+    Int timeout = 4
+    String modules = "samtools/1.14"
+
+  }
+
+  parameter_meta {
+    inputBam: "Input file (bam)."
+    jobMemory: "Memory (in GB) allocated for job."
+    modules: "Environment module names and version to load (space separated) before command execution."
+    timeout: "Maximum amount of time (in hours) the task can run for."
+  }
+
+  meta {
+    output_meta : {
+      genomeFile: "Genome file the defines the expected chromosome order in the bam file."
+    }
+  }
+
+  command <<<
+    samtools view -H ~{inputBam} | \
+    grep @SQ | sed 's/@SQ\tSN:\|LN://g' \
+    > genome.txt
+  >>>
+
+  runtime {
+    memory: "~{jobMemory} GB"
+    modules: "~{modules}"
+    timeout: "~{timeout}"
+  }
+
+  output {
+    File genomeFile = "genome.txt"
+  }
+}
+
+
 task calculateProbeCoverageDistribution {
   input {
     File inputBam
     File inputBai
     File inputBed
+    File genomeFile
     Int jobMemory = 10
     Int timeout = 4
     String outputPrefix
@@ -69,6 +116,7 @@ task calculateProbeCoverageDistribution {
     inputBam: "Input file (bam)."
     inputBai: "index of the input .bam file"
     inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
+    genomeFile: "Genome file the defines the expected chromosome order in the bam file."
     jobMemory: "Memory (in GB) allocated for job."
     outputPrefix: "Output prefix to prefix output file names with."
     modules: "Environment module names and version to load (space separated) before command execution."
@@ -85,7 +133,8 @@ task calculateProbeCoverageDistribution {
     bedtools coverage -hist \
     -a ~{inputBed} \
     -b ~{inputBam} \
-    > "~{outputPrefix}.cvghist.txt"
+    -sorted ~{genomeFile} \
+    > "~{outputPrefix}.cvghist.txt" 
   >>>
 
   runtime {
