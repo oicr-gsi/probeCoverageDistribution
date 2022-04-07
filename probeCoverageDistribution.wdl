@@ -40,6 +40,14 @@ workflow probeCoverageDistribution {
       inputBed = bed
   }
 
+  if (countColumns.numberColumns == 5) {
+    #workflow assumes all bed files have 4 or 5 columns
+    call splitBed {
+      input:
+        inputBed = bed
+    }
+
+    #scatter task with array output
   }
 
   call calculateProbeCoverageDistribution {
@@ -141,6 +149,44 @@ task countColumns {
 
   output {
     Int numberColumns = read_int("number_columns.txt")
+  }
+}
+
+task splitBed {
+  input {
+    File inputBed
+    Int jobMemory = 10
+    Int timeout = 4
+    #String modules = "samtools/1.14"
+
+  }
+
+  parameter_meta {
+    inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
+    jobMemory: "Memory (in GB) allocated for job."
+    timeout: "Maximum amount of time (in hours) the task can run for."
+    #modules: "Environment module names and version to load (space separated) before command execution."
+  }
+
+  meta {
+    output_meta : {
+      splitBeds: "Bed file split when there are two name columns (feature description)."
+    }
+  }
+
+  command <<<
+    cat ~{inputBed} | cut -f 1-4 > probes_1.bed
+    cat ~{inputBed} | cut -f 1-3,5 > probes_2.bed
+  >>>
+
+  runtime {
+    memory: "~{jobMemory} GB"
+    timeout: "~{timeout}"
+    #modules: "~{modules}"
+  }
+
+  output {
+    Array[File] splitBeds = glob("*.bed")
   }
 }
 
