@@ -47,20 +47,33 @@ workflow probeCoverageDistribution {
         inputBed = bed
     }
 
-    #scatter task with array output
+    scatter (bedFile in splitBed.splitBeds) {
+      call calculateProbeCoverageDistribution as calcProbeCovDistScattered {
+        input:
+          inputBam = select_first([bwaMem.bwaMemBam,bam]),
+          inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
+          inputBed = bedFile,
+          genomeFile = getGenomeFile.genomeFile,
+          outputPrefix = outputFileNamePrefix
+      }
+    }
   }
 
-  call calculateProbeCoverageDistribution {
-    input:
-      inputBam = select_first([bwaMem.bwaMemBam,bam]),
-      inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
-      inputBed = bed,
-      genomeFile = getGenomeFile.genomeFile,
-      outputPrefix = outputFileNamePrefix
+  if (countColumns.numberColumns == 4) {
+    #workflow assumes all bed files have 4 or 5 columns
+    call calculateProbeCoverageDistribution {
+      input:
+        inputBam = select_first([bwaMem.bwaMemBam,bam]),
+        inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
+        inputBed = bed,
+        genomeFile = getGenomeFile.genomeFile,
+        outputPrefix = outputFileNamePrefix
+    }
   }
 
   output {
-    File coverageHistogram = calculateProbeCoverageDistribution.coverageHistogram
+    File? coverageHistogram = calculateProbeCoverageDistribution.coverageHistogram
+    Array [File]? coverageHistograms = calcProbeCovDistScattered.coverageHistogram
   }
 
   meta {
