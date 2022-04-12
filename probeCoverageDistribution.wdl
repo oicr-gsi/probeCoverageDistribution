@@ -69,6 +69,12 @@ workflow probeCoverageDistribution {
         genomeFile = getGenomeFile.genomeFile,
         outputPrefix = outputFileNamePrefix
     }
+
+    call Rplot {
+      coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
+      inputBed = bed,
+      outputPrefix = outputFileNamePrefix
+    }
   }
 
   output {
@@ -251,5 +257,47 @@ task calculateProbeCoverageDistribution {
 
   output {
     File coverageHistogram = "~{outputPrefix}.cvghist.txt"
+  }
+}
+
+task Rplot {
+  input {
+    File inputBed
+    File coverageHist
+    String outputPrefix
+    Int jobMemory = 10
+    Int timeout = 4
+    #String modules = "renv/0.2"
+
+  }
+
+  parameter_meta {
+    inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
+    coverageHist: "Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file."
+    outputPrefix: "Output prefix to prefix output file names with."
+    jobMemory: "Memory (in GB) allocated for job."
+    timeout: "Maximum amount of time (in hours) the task can run for."
+    #modules: "Environment module names and version to load (space separated) before command execution."
+  }
+
+  meta {
+    output_meta : {
+      plots: "Probe coverage distribution plots."
+    }
+  }
+
+  command <<<
+    Rscript --vanilla /.mounts/labs/gsiprojects/gsi/gsiusers/blujantoro/wdl/TSprobeCoverage/probeCoverageDistribution/src/plot_coverage_histograms.R \
+    -b ~{inputBed} -c  ~{coverageHist} -o ~{outputPrefix}
+  >>>
+
+  runtime {
+    memory: "~{jobMemory} GB"
+    timeout: "~{timeout}"
+    #modules: "~{modules}"
+  }
+
+  output {
+    Array[File] Rplots = glob("*.png")
   }
 }
