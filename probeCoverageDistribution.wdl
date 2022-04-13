@@ -267,7 +267,7 @@ task Rplot {
     String outputPrefix
     Int jobMemory = 10
     Int timeout = 4
-    #String modules = "renv/0.2"
+    String modules = "rmarkdown/0.1m"
 
   }
 
@@ -277,7 +277,7 @@ task Rplot {
     outputPrefix: "Output prefix to prefix output file names with."
     jobMemory: "Memory (in GB) allocated for job."
     timeout: "Maximum amount of time (in hours) the task can run for."
-    #modules: "Environment module names and version to load (space separated) before command execution."
+    modules: "Environment module names and version to load (space separated) before command execution."
   }
 
   meta {
@@ -294,7 +294,7 @@ task Rplot {
   runtime {
     memory: "~{jobMemory} GB"
     timeout: "~{timeout}"
-    #modules: "~{modules}"
+    modules: "~{modules}"
   }
 
   output {
