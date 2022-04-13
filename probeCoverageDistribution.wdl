@@ -71,9 +71,10 @@ workflow probeCoverageDistribution {
     }
 
     call Rplot {
-      coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
-      inputBed = bed,
-      outputPrefix = outputFileNamePrefix
+      input:
+        coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
+        inputBed = bed,
+        outputPrefix = outputFileNamePrefix
     }
   }
 
