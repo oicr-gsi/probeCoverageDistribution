@@ -266,9 +266,9 @@ task Rplot {
     File inputBed
     File coverageHist
     String outputPrefix
-    Int jobMemory = 10
+    Int jobMemory = 20
     Int timeout = 4
-    String modules = "rmarkdown/0.1m"
+    String modules = "rmarkdown/0.1"
 
   }
 
