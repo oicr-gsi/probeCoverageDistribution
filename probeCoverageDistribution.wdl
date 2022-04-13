@@ -268,7 +268,7 @@ task Rplot {
     String outputPrefix
     Int jobMemory = 20
     Int timeout = 4
-    String modules = "rmarkdown/0.1"
+    String modules = "probe-coverage-distribution/1.0"
 
   }
 

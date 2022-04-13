@@ -20,6 +20,7 @@ if (length(option_list)!=3) {
 
 library(ggpubr)
 library(ggplot2)
+library(tidytext)
 
 #read bed file
 bed<-read.delim(file=opt$bedFile, sep="\t",header=F)
