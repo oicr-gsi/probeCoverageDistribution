@@ -22,6 +22,9 @@ library(ggpubr)
 library(ggplot2)
 library(tidytext)
 
+#test
+options(bitmapType='cairo')
+
 #read bed file
 bed<-read.delim(file=opt$bedFile, sep="\t",header=F)
 
