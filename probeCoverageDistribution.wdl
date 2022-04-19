@@ -56,6 +56,13 @@ workflow probeCoverageDistribution {
           genomeFile = getGenomeFile.genomeFile,
           outputPrefix = outputFileNamePrefix
       }
+
+      call Rplot as RplotScattered {
+        input:
+          coverageHist = calcProbeCovDistScattered.coverageHistogram,
+          inputBed = bedFile,
+          outputPrefix = outputFileNamePrefix
+      }
     }
   }
 
