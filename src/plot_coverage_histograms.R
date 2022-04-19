@@ -109,6 +109,7 @@ df2<-df2[df2$interval %in% subset,]
 g2<-ggplot(df2[df2$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id,set)),y=value)) + geom_point() +
   #facet_wrap(id~set,ncol=2,scales="free_x") +
   facet_wrap(~set,ncol=2,scales="free_x") +
+  scale_y_log10()+
   theme(axis.text.x = element_blank()) +
   guides(x = "none") +
   labs(title=paste ("Mean interval coverage sorted", sep = "")) + xlab("interval") + ylab("depth")
