@@ -138,15 +138,12 @@ task countColumns {
     File inputBed
     Int jobMemory = 10
     Int timeout = 4
-    #String modules = "samtools/1.14"
-
   }
 
   parameter_meta {
     inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
     jobMemory: "Memory (in GB) allocated for job."
     timeout: "Maximum amount of time (in hours) the task can run for."
-    #modules: "Environment module names and version to load (space separated) before command execution."
   }
 
   meta {
@@ -157,14 +154,11 @@ task countColumns {
 
   command <<<
     cat ~{inputBed} | awk '{print NF}' | sort -nu > number_columns.txt
-    #if [[ $numberColumns =   4 ]];
-    #then echo "Found a Tomcat!"; fi
   >>>
 
   runtime {
     memory: "~{jobMemory} GB"
     timeout: "~{timeout}"
-    #modules: "~{modules}"
   }
 
   output {
@@ -177,15 +171,12 @@ task splitBed {
     File inputBed
     Int jobMemory = 10
     Int timeout = 4
-    #String modules = "samtools/1.14"
-
   }
 
   parameter_meta {
     inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
     jobMemory: "Memory (in GB) allocated for job."
     timeout: "Maximum amount of time (in hours) the task can run for."
-    #modules: "Environment module names and version to load (space separated) before command execution."
   }
 
   meta {
@@ -202,7 +193,6 @@ task splitBed {
   runtime {
     memory: "~{jobMemory} GB"
     timeout: "~{timeout}"
-    #modules: "~{modules}"
   }
 
   output {
@@ -220,7 +210,6 @@ task calculateProbeCoverageDistribution {
     Int timeout = 4
     String outputPrefix
     String modules = "bedtools/2.27"
-
   }
 
   parameter_meta {
@@ -269,7 +258,6 @@ task Rplot {
     Int jobMemory = 20
     Int timeout = 4
     String modules = "probe-coverage-distribution/1.0"
-
   }
 
   parameter_meta {
