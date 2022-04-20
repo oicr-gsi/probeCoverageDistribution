@@ -88,8 +88,9 @@ workflow probeCoverageDistribution {
   output {
     #File? coverageHistogram = calculateProbeCoverageDistribution.coverageHistogram
     #Array [File]? coverageHistograms = calcProbeCovDistScattered.coverageHistogram
-    Array [File]? plots = RplotScattered.Rplots
+    #Array [File] plotsScattered = select_first([flatten(RplotScattered.Rplots),Rplot.Rplots])
     Array [File]? plots = Rplot.Rplots
+    Array[Array[File]]? plotsScattered = RplotScattered.Rplots
   }
 
   meta {
