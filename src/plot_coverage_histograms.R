@@ -29,6 +29,8 @@ options(bitmapType='cairo')
 bed<-read.delim(file=opt$bedFile, sep="\t",header=F)
 
 #bed<-read.delim(file="~/probeCoverageDev/GBS-2987/bed/LLDM.EXOME.TS.hg19.bed", sep="\t",header=F)
+#bed<-read.delim(file="/Volumes/blujantoro/wdl_dev/probecov/probes_1.bed", sep="\t",header=F)
+
 
 colnames(bed)<-c("chrom","start","stop","pool")
 bed<-bed[order(bed$pool,bed$chrom,bed$start),]
@@ -42,7 +44,8 @@ id<-opt$outputBasename
 hist<-read.delim(file=opt$cvgFile,sep="\t",as.is=T,header=F)
 
 #hist<-read.delim(file="~/probeCoverageDev/GBS-2987/cvg/LLDM_0019_Ln_P_PE_358_TS_210727_A00469_0191_AH7MVVDSX2_3_GCCTATCA-AATGGTCG_R1.fastq.gz.cvghist.txt",sep="\t",as.is=T,header=F)
-
+#hist<-read.delim(file="/Volumes/blujantoro/wdl_dev/probecov/TGL50_0010_Ct_T_PE_416_TS.cvghist.txt",sep="\t",as.is=T,header=F)
+#id <- "LLDM_0019_Ln_P_PE_358_TS"
 
 colnames(hist)<-c("chrom","start","stop","pool","depth","bases","size","proportion")
 hist<-hist[hist$chrom != "all",]
@@ -73,7 +76,6 @@ df.all$interval<-factor(df.all$interval,levels=rownames(bed))
 df.all$pool<-bed[df.all$interval,]$pool
 
 #save.image(file="image.RData")
-
 ############# All plot
 g0<-ggplot(df.all[df.all$metric=="cvg_mean",], aes(x=interval,y=value,col=pool)) +
   geom_bar(stat="identity") +
@@ -96,32 +98,40 @@ g1<-ggplot(percent_intervals_with_coverage,aes(y=value,x=pool,col=pool)) +
   labs(title=paste ("Percent of Intervals with coverage", sep = "")) + xlab("subset") + ylab("percent")
 
 ############# Sorted coverage
-df2<-df.all
-#df2<-df2[df2$metric == "cvg_mean",]
-df2$set<-ifelse(df2$pool=="EXOME","EXOME","LLDM_TARGETS")
-
-subset1<-rownames(bed[bed$pool!="EXOME",])
-subset2<-sample(rownames(bed[bed$pool=="EXOME",]),4000)
-subset<-c(subset1,subset2)
-
-df2<-df2[df2$interval %in% subset,]
-
-g2<-ggplot(df2[df2$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id,set)),y=value)) + geom_point() +
+#g2<-ggplot(df.all[df.all$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id,set)),y=value)) + geom_point() +
+g2<-ggplot(df.all[df.all$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id)),y=value)) + geom_point() +
   #facet_wrap(id~set,ncol=2,scales="free_x") +
-  facet_wrap(~set,ncol=2,scales="free_x") +
+  #facet_wrap(~set,ncol=2,scales="free_x") +
   scale_y_log10()+
   theme(axis.text.x = element_blank()) +
   guides(x = "none") +
   labs(title=paste ("Mean interval coverage sorted", sep = "")) + xlab("interval") + ylab("depth")
-#ggsave(g5,file=paste("mean_interval_depths_sorted.pdf", sep=""),dev="pdf",height=30,width=15)
-
-gall <-ggarrange(g0, g1, g2,
-                 ncol = 1, nrow = 3)
-ggsave(gall,file=paste(id, "_coverage_plots.png", sep = ""),dev="png",height=10,width=15)
+#ggsave(g2,file=paste("mean_interval_depths_sorted.png", sep=""),dev="png",height=30,width=15)
 
 for (pool in unique(df.all$pool)){
   if (length(which(df.all$pool == pool)) > 10000 ){
-
+    #print(pool)
+    df2<-df.all
+    #df2<-df2[df2$metric == "cvg_mean",]
+    df2$set<-ifelse(df2$pool== pool, pool,"Other pools")
+    
+    subset1<-rownames(bed[bed$pool!=pool,])
+    subset2<-sample(rownames(bed[bed$pool==pool,]),4000)
+    subset<-c(subset1,subset2)
+    
+    df2<-df2[df2$interval %in% subset,]
+    
+    g2<-ggplot(df2[df2$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id,set)),y=value)) + geom_point() +
+    #g2<-ggplot(df2[df.all$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id,set)),y=value)) + geom_point() +
+      #facet_wrap(id~set,ncol=2,scales="free_x") +
+      facet_wrap(~set,ncol=2,scales="free_x") +
+      scale_y_log10()+
+      theme(axis.text.x = element_blank()) +
+      guides(x = "none") +
+      labs(title=paste ("Mean interval coverage sorted", sep = "")) + xlab("interval") + ylab("depth")
+    #ggsave(g5,file=paste("mean_interval_depths_sorted.pdf", sep=""),dev="pdf",height=30,width=15)
+    
+    
     ############# PLOT LARGE POOL
     large_set <- rownames(bed[bed$pool== pool,])
     df.largePool <- df.all[df.all$interval %in% large_set,]
@@ -154,3 +164,7 @@ for (pool in unique(df.all$pool)){
     ggsave(gall,file=paste(id, "coverage_plots_with_subsampling.png", sep = ""),dev="png",height=10,width=15)
   }
 }
+
+gall <-ggarrange(g0, g1, g2,
+                 ncol = 1, nrow = 3)
+ggsave(gall,file=paste(id, "_coverage_plots.png", sep = ""),dev="png",height=10,width=15)
