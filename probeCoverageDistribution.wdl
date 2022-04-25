@@ -47,12 +47,19 @@ workflow probeCoverageDistribution {
         inputBed = bed
     }
 
+    #Int sufix = 0
+
     scatter (bedFile in splitBed.splitBeds) {
+
+      #how about using zip from the split bed task
+      #Int sufix = sufix + 1
+
       call calculateProbeCoverageDistribution as calcProbeCovDistScattered {
+
         input:
           inputBam = select_first([bwaMem.bwaMemBam,bam]),
           inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
-          inputBed = bedFile,
+          inputBed = bedFile.right,
           genomeFile = getGenomeFile.genomeFile,
           outputPrefix = outputFileNamePrefix
       }
@@ -60,8 +67,9 @@ workflow probeCoverageDistribution {
       call Rplot as RplotScattered {
         input:
           coverageHist = calcProbeCovDistScattered.coverageHistogram,
-          inputBed = bedFile,
-          outputPrefix = outputFileNamePrefix
+          inputBed = bedFile.right,
+          outputPrefix = outputFileNamePrefix,
+          multipleBed = bedFile.left
       }
     }
   }
@@ -81,14 +89,12 @@ workflow probeCoverageDistribution {
       input:
         coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
         inputBed = bed,
-        outputPrefix = outputFileNamePrefix
+        outputPrefix = outputFileNamePrefix,
+        #multipleBed = false
     }
   }
 
   output {
-    #File? coverageHistogram = calculateProbeCoverageDistribution.coverageHistogram
-    #Array [File]? coverageHistograms = calcProbeCovDistScattered.coverageHistogram
-    #Array [File] plotsScattered = select_first([flatten(RplotScattered.Rplots),Rplot.Rplots])
     Array [File]? plots = Rplot.Rplots
     Array[Array[File]]? plotsScattered = RplotScattered.Rplots
   }
@@ -206,7 +212,9 @@ task splitBed {
   }
 
   output {
-    Array[File] splitBeds = glob("*.bed")
+    #Array[File] splitBeds = glob("*.bed")
+    #Array[File] splitBeds = glob("*.bed")
+    Array[Pair[String, File]] splitBeds = [("1",  "probes_1.bed"),("2",  "probes_2.bed")]
   }
 }
 
@@ -265,6 +273,7 @@ task Rplot {
     File inputBed
     File coverageHist
     String outputPrefix
+    String? multipleBed
     Int jobMemory = 20
     Int timeout = 4
     String modules = "probe-coverage-distribution/1.0"
@@ -285,9 +294,26 @@ task Rplot {
     }
   }
 
+  #String s = "~{if b then '${1 + i}' else 0}"
+
+
+  # if(multipleBed==true){
+  #   sufix= "basename ~{inputBed} | cut -f 2 -d "_" | cut -f 1 -d ".""
+  #   #sufix=($basename ~{inputBed} | cut -f 2 -d "_" | cut -f 1 -d ".")
+  #   outputPrefix = outputPrefix + $sufix
+  # }
+
   command <<<
+    #if(multipleBed==true){
+      #sufix= "basename ~{inputBed} | cut -f 2 -d "_" | cut -f 1 -d ".""
+    #  sufix=($basename ~{inputBed} | cut -f 2 -d "_" | cut -f 1 -d ".")
+      #outputPrefix = outputPrefix + ${sufix}
+    #}
+
+    #~{outputPrefix + multipleBed}
+
     Rscript --vanilla /.mounts/labs/gsiprojects/gsi/gsiusers/blujantoro/wdl/TSprobeCoverage/probeCoverageDistribution/src/plot_coverage_histograms.R \
-    -b ~{inputBed} -c  ~{coverageHist} -o ~{outputPrefix}
+    -b ~{inputBed} -c  ~{coverageHist} -o ~{outputPrefix}~{"_" + multipleBed}
   >>>
 
   runtime {
