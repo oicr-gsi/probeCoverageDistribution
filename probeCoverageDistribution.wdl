@@ -47,12 +47,7 @@ workflow probeCoverageDistribution {
         inputBed = bed
     }
 
-    #Int sufix = 0
-
     scatter (bedFile in splitBed.splitBeds) {
-
-      #how about using zip from the split bed task
-      #Int sufix = sufix + 1
 
       call calculateProbeCoverageDistribution as calcProbeCovDistScattered {
 
@@ -212,8 +207,6 @@ task splitBed {
   }
 
   output {
-    #Array[File] splitBeds = glob("*.bed")
-    #Array[File] splitBeds = glob("*.bed")
     Array[Pair[String, File]] splitBeds = [("1",  "probes_1.bed"),("2",  "probes_2.bed")]
   }
 }
@@ -296,24 +289,9 @@ task Rplot {
 
   #String s = "~{if b then '${1 + i}' else 0}"
 
-
-  # if(multipleBed==true){
-  #   sufix= "basename ~{inputBed} | cut -f 2 -d "_" | cut -f 1 -d ".""
-  #   #sufix=($basename ~{inputBed} | cut -f 2 -d "_" | cut -f 1 -d ".")
-  #   outputPrefix = outputPrefix + $sufix
-  # }
-
   command <<<
-    #if(multipleBed==true){
-      #sufix= "basename ~{inputBed} | cut -f 2 -d "_" | cut -f 1 -d ".""
-    #  sufix=($basename ~{inputBed} | cut -f 2 -d "_" | cut -f 1 -d ".")
-      #outputPrefix = outputPrefix + ${sufix}
-    #}
-
-    #~{outputPrefix + multipleBed}
-
     Rscript --vanilla /.mounts/labs/gsiprojects/gsi/gsiusers/blujantoro/wdl/TSprobeCoverage/probeCoverageDistribution/src/plot_coverage_histograms.R \
-    -b ~{inputBed} -c  ~{coverageHist} -o ~{outputPrefix}~{"_" + multipleBed}
+    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix}~{"_" + multipleBed}
   >>>
 
   runtime {
