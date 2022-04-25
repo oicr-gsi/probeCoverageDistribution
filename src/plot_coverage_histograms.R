@@ -73,7 +73,7 @@ g0<-ggplot(df.all[df.all$metric=="cvg_mean",], aes(x=interval,y=value,col=pool))
   geom_bar(stat="identity") +
   theme( axis.text.x = element_blank()) +
   labs(title=paste("                                                                                                  ",id, "\nMean Interval coverage", sep = "")) + xlab("interval") + ylab("depth")
-ggsave(g0,file=paste(id,"_mean_interval_coverage.png"),dev="png",height=10,width=15)
+ggsave(g0,file=paste0(id,"_mean_interval_coverage.png"),dev="png",height=10,width=15)
 
 ############# Percent coverage
 cvg0<-df.all[df.all$metric=="cvg0",]
@@ -85,7 +85,7 @@ g1<-ggplot(percent_intervals_with_coverage,aes(y=value,x=pool,col=pool)) +
   #facet_wrap(~id,ncol=3) +
   theme(axis.text.x = element_blank()) +
   labs(title=paste ("Percent of Intervals with coverage", sep = "")) + xlab("subset") + ylab("percent")
-ggsave(g1,file=paste(id,"_percent_intervals_w_coverage.png"),dev="png",height=10,width=15)
+ggsave(g1,file=paste0(id,"_percent_intervals_w_coverage.png"),dev="png",height=10,width=15)
 
 ############# Sorted coverage
 g2<-ggplot(df.all[df.all$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id)),y=value)) + geom_point() +
@@ -121,7 +121,7 @@ for (pool in unique(df.all$pool)){
       geom_bar(stat="identity") +
       theme(axis.text.x = element_blank()) +
       labs(title=paste("                                                                                                  ",id, "\nMean interval coverage - Large pool", sep = "")) + xlab("interval") + ylab("depth")
-    ggsave(g3,file=paste(id,"mean_interval_coverage_large_pool.png"),dev="png",height=10,width=15)
+    ggsave(g3,file=paste0(id,"mean_interval_coverage_large_pool.png"),dev="png",height=10,width=15)
 
 
     ############# Pool and Subsampled Large pool
@@ -136,8 +136,8 @@ for (pool in unique(df.all$pool)){
       #facet_wrap(~id,ncol=4) +
       theme(axis.text.x = element_blank()) +
       labs(title=paste ("Mean interval coverage - Pools and subsampled large pool", sep = "")) + xlab("interval") + ylab("depth")
-    ggsave(g4,file=paste(id,"mean_interval_coverage_pools_subsampled_largepool.png"),dev="png",height=10,width=15)
+    ggsave(g4,file=paste0(id,"mean_interval_coverage_pools_subsampled_largepool.png"),dev="png",height=10,width=15)
   }
 }
 
-ggsave(g2,file=paste(id, "mean_interval_coverage_sorted.png", sep=""),dev="png",height=10,width=15)
+ggsave(g2,file=paste0(id, "_mean_interval_coverage_sorted.png"),dev="png",height=10,width=15)
