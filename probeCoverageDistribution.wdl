@@ -66,6 +66,13 @@ workflow probeCoverageDistribution {
           outputPrefix = outputFileNamePrefix,
           multipleBed = bedFile.left
       }
+
+    }
+
+    call zipResults as zipScatteredResults {
+     input:
+       inFiles=flatten(RplotScattered.Rplots),
+       outputPrefix = outputFileNamePrefix
     }
   }
 
@@ -87,16 +94,15 @@ workflow probeCoverageDistribution {
         outputPrefix = outputFileNamePrefix,
         #multipleBed = false
     }
-  }
 
-  call zipResults{
-    input: inFiles=select_first([flatten(RplotScattered.Rplots), Rplot.Rplots])
+    call zipResults{
+      input: inFiles=Rplot.Rplots,
+      outputPrefix = outputFileNamePrefix
+    }
   }
 
   output {
-    File results = zipResults.zipArchive
-    #Array [File]? plots = Rplot.Rplots
-    #Array[Array[File]]? plotsScattered = RplotScattered.Rplots
+    File results = select_first([zipScatteredResults.zipArchive, zipResults.zipArchive])
   }
 
   meta {
@@ -343,12 +349,11 @@ task zipResults {
 
   runtime {
     memory:  "~{jobMemory} GB"
-    modules: "~{modules}"
     timeout: "~{timeout}"
   }
 
   output {
-    File zipArchive = "~{outPrefix}.zip"
+    File zipArchive = "~{outputPrefix}.zip"
   }
 
 }
