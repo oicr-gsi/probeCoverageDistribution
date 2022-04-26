@@ -114,10 +114,10 @@ workflow probeCoverageDistribution {
       name: "bedtools/2.27",
       url: "https://bedtools.readthedocs.io/en/latest/content/bedtools-suite.html"
     }]
-  }
-  output_meta: {
-    cvgFile: "Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.",
-    plots: "A zip file of all the Rplots created by the workflow, which show interval panel coverage."
+    output_meta: {
+      cvgFile: "Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.",
+      plots: "A zip file of all the Rplots created by the workflow, which show interval panel coverage."
+    }
   }
 }
 
