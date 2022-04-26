@@ -102,7 +102,8 @@ workflow probeCoverageDistribution {
   }
 
   output {
-    File results = select_first([zipScatteredResults.zipArchive, zipResults.zipArchive])
+    File cvgFile = select_first([calcProbeCovDistScattered.coverageHistogram, calculateProbeCoverageDistribution.coverageHistogram])
+    File plots = select_first([zipScatteredResults.zipArchive, zipResults.zipArchive])
   }
 
   meta {
@@ -113,6 +114,10 @@ workflow probeCoverageDistribution {
       name: "bedtools/2.27",
       url: "https://bedtools.readthedocs.io/en/latest/content/bedtools-suite.html"
     }]
+  }
+  output_meta: {
+    cvgFile: "Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.",
+    plots: "A zip file of all the Rplots created by the workflow, which show interval panel coverage."
   }
 }
 
