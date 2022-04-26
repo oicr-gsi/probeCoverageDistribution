@@ -89,9 +89,14 @@ workflow probeCoverageDistribution {
     }
   }
 
+  call zipResults{
+    input: inFiles=select_first([flatten(RplotScattered.Rplots), Rplot.Rplots])
+  }
+
   output {
-    Array [File]? plots = Rplot.Rplots
-    Array[Array[File]]? plotsScattered = RplotScattered.Rplots
+    File results = zipResults.zipArchive
+    #Array [File]? plots = Rplot.Rplots
+    #Array[Array[File]]? plotsScattered = RplotScattered.Rplots
   }
 
   meta {
@@ -303,4 +308,47 @@ task Rplot {
   output {
     Array[File] Rplots = glob("*.png")
   }
+}
+
+task zipResults {
+
+  input {
+    Array[File] inFiles
+    String outputPrefix
+    Int jobMemory = 12
+    Int timeout = 4
+  }
+
+  parameter_meta {
+    inFiles: "Array of input files"
+    jobMemory: "Memory for the task, in gigabytes"
+    timeout: "Timeout for the task, in hours"
+  }
+
+  meta {
+    description: "Gather plots into a .zip archive"
+    output_meta: {
+      zipArchive: "ZIP archive file"
+    }
+  }
+
+  # create a directory for the zip archive; allows unzip without exploding multiple files into the working directory
+
+  command <<<
+    set -euo pipefail
+    mkdir ~{outputPrefix}
+    cp -t ~{outputPrefix} ~{sep=' ' inFiles}
+    zip -qr ~{outputPrefix}.zip ~{outputPrefix}
+  >>>
+
+  runtime {
+    memory:  "~{jobMemory} GB"
+    modules: "~{modules}"
+    timeout: "~{timeout}"
+  }
+
+  output {
+    File zipArchive = "~{outPrefix}.zip"
+  }
+
 }
