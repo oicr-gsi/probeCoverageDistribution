@@ -1,88 +1,111 @@
 [
-    {
-        "arguments": {
-            "probeCoverageDistribution.calculateProbeCoverageDistribution.jobMemory": null,
-            "probeCoverageDistribution.calculateProbeCoverageDistribution.timeout": null,
-            "probeCoverageDistribution.calculateProbeCoverageDistribution.modules": null,
-            "probeCoverageDistribution.bwaMem.adapter1": null,
-            "probeCoverageDistribution.bwaMem.adapter2": null,
-            "probeCoverageDistribution.bwaMem.adapterTrimmingLog_jobMemory": null,
-            "probeCoverageDistribution.bwaMem.adapterTrimmingLog_timeout": null,
-            "probeCoverageDistribution.bwaMem.adapterTrimming_addParam": null,
-            "probeCoverageDistribution.bwaMem.adapterTrimming_jobMemory": null,
-            "probeCoverageDistribution.bwaMem.adapterTrimming_modules": null,
-            "probeCoverageDistribution.bwaMem.adapterTrimming_timeout": null,
-            "probeCoverageDistribution.bwaMem.bamMerge_jobMemory": null,
-            "probeCoverageDistribution.bwaMem.bamMerge_modules": null,
-            "probeCoverageDistribution.bwaMem.bamMerge_timeout": null,
-            "probeCoverageDistribution.bwaMem.countChunkSize_jobMemory": null,
-            "probeCoverageDistribution.bwaMem.countChunkSize_timeout": null,
-            "probeCoverageDistribution.bwaMem.doTrim": true,
-            "probeCoverageDistribution.bwaMem.indexBam_jobMemory": null,
-            "probeCoverageDistribution.bwaMem.indexBam_modules": null,
-            "probeCoverageDistribution.bwaMem.indexBam_timeout": null,
-            "probeCoverageDistribution.bwaMem.numChunk": null,
-            "probeCoverageDistribution.bwaMem.readGroups": "'@RG\\tID:200131_A00469_0078_AH3N37DSXY_TTCCAAGG-CCTTGTAG_1\\tLB:TGL07_0006_Lv_M_PE_511_WG\\tPL:ILLUMINA\\tPU:200131_A00469_0078_AH3N37DSXY_TTCCAAGG-CCTTGTAG_1\\tSM:TGL07_0006_Lv_M_IMP-00867-ARC'", #correct this
-            "probeCoverageDistribution.bwaMem.runBwaMem_addParam": null,
-            "probeCoverageDistribution.bwaMem.runBwaMem_bwaRef": "$HG19_BWA_INDEX_ROOT/hg19_random.fa",
-            "probeCoverageDistribution.bwaMem.runBwaMem_jobMemory": null,
-            "probeCoverageDistribution.bwaMem.runBwaMem_modules": "samtools/1.9 bwa/0.7.12 hg19-bwa-index/0.7.12",
-            "probeCoverageDistribution.bwaMem.runBwaMem_threads": null,
-            "probeCoverageDistribution.bwaMem.runBwaMem_timeout": null,
-            "probeCoverageDistribution.bwaMem.slicerR1_jobMemory": null,
-            "probeCoverageDistribution.bwaMem.slicerR1_modules": null,
-            "probeCoverageDistribution.bwaMem.slicerR1_timeout": null,
-            "probeCoverageDistribution.bwaMem.slicerR2_jobMemory": null,
-            "probeCoverageDistribution.bwaMem.slicerR2_modules": null,
-            "probeCoverageDistribution.bwaMem.slicerR2_timeout": null,
-            "probeCoverageDistribution.bwaMem.trimMinLength": null,
-            "probeCoverageDistribution.bwaMem.trimMinQuality": null,
-            "probeCoverageDistribution.fastqR1": {
-                "contents": {
-                    "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/GLCS_0002_Ly_R_PE_4141_WG_S9_L001_R1_001.fastq.gz",
-                    "externalIds": [
-                        {
-                            "id": "TEST",
-                            "provider": "TEST"
-                        }
-                    ]
-                },
-                "type": "EXTERNAL"
-            },
-            "probeCoverageDistribution.fastqR2": {
-              "contents": {
-                  "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/GLCS_0002_Ly_R_PE_4141_WG_S9_L001_R2_001.fastq.gz",
-                  "externalIds": [
-                      {
-                          "id": "TEST",
-                          "provider": "TEST"
-                      }
-                  ]
-              },
-              "type": "EXTERNAL"
-          },
-            "probeCoverageDistribution.outputFileNamePrefix": "GLCS_0002_Ly_R_PE_4141_WG_S9_L001"
-        },
-        "description": "probeCoverageDistribution workflow test",
-        "engineArguments": {},
-        "id": "test_01",
-        "metadata": {
-            "probeCoverageDistribution.coverageHistogram": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_probeCoverageDistribution_test_01_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            }
-        },
-        "validators": [
+  {
+    "id": "test_01",
+    "description": "probeCoverageDistribution workflow test",
+    "arguments": {
+      "probeCoverageDistribution.calculateProbeCoverageDistribution.jobMemory": null,
+      "probeCoverageDistribution.calculateProbeCoverageDistribution.timeout": null,
+      "probeCoverageDistribution.calculateProbeCoverageDistribution.modules": null,
+      "probeCoverageDistribution.bwaMem.adapter1": null,
+      "probeCoverageDistribution.bwaMem.adapter2": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimmingLog_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimmingLog_timeout": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimming_addParam": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimming_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimming_modules": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimming_timeout": null,
+      "probeCoverageDistribution.bwaMem.bamMerge_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.bamMerge_modules": null,
+      "probeCoverageDistribution.bwaMem.bamMerge_timeout": null,
+      "probeCoverageDistribution.bwaMem.countChunkSize_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.countChunkSize_timeout": null,
+      "probeCoverageDistribution.bwaMem.doTrim": true,
+      "probeCoverageDistribution.bwaMem.indexBam_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.indexBam_modules": null,
+      "probeCoverageDistribution.bwaMem.indexBam_timeout": null,
+      "probeCoverageDistribution.bwaMem.numChunk": null,
+      "probeCoverageDistribution.bwaMem.readGroups": "'@RG\\tID:PROBECOVERAGEDISTRIBUTION\\tSM:SAMPLE'",
+      "probeCoverageDistribution.bwaMem.runBwaMem_addParam": null,
+      "probeCoverageDistribution.bwaMem.runBwaMem_bwaRef": "$HG19_BWA_INDEX_ROOT/hg19_random.fa",
+      "probeCoverageDistribution.bwaMem.runBwaMem_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.runBwaMem_modules": "samtools/1.9 bwa/0.7.12 hg19-bwa-index/0.7.12",
+      "probeCoverageDistribution.bwaMem.runBwaMem_threads": null,
+      "probeCoverageDistribution.bwaMem.runBwaMem_timeout": null,
+      "probeCoverageDistribution.bwaMem.slicerR1_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.slicerR1_modules": null,
+      "probeCoverageDistribution.bwaMem.slicerR1_timeout": null,
+      "probeCoverageDistribution.bwaMem.slicerR2_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.slicerR2_modules": null,
+      "probeCoverageDistribution.bwaMem.slicerR2_timeout": null,
+      "probeCoverageDistribution.bwaMem.trimMinLength": null,
+      "probeCoverageDistribution.bwaMem.trimMinQuality": null,
+      "probeCoverageDistribution.countColumns.jobMemory": null,
+      "probeCoverageDistribution.countColumns.timeout": null,
+      "probeCoverageDistribution.fastqR1": {
+        "contents": {
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/GLCS_0002_Ly_R_PE_4141_WG_S9_L001_R1_001.fastq.gz",
+          "externalIds": [
             {
-                "metrics_calculate": "@CHECKOUT@/calculate.sh",
-                "metrics_compare": "@CHECKOUT@/compare.sh",
-                "output_metrics": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/output_metrics/test_01.metrics",
-                "type": "script"
+              "id": "TEST",
+              "provider": "TEST"
             }
-        ]
-    }
+          ]
+        },
+        "type": "EXTERNAL"
+      },
+      "probeCoverageDistribution.fastqR2": {
+        "contents": {
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/GLCS_0002_Ly_R_PE_4141_WG_S9_L001_R2_001.fastq.gz",
+          "externalIds": [
+            {
+              "id": "TEST",
+              "provider": "TEST"
+            }
+          ]
+        },
+        "type": "EXTERNAL"
+      },
+      "probeCoverageDistribution.getGenomeFile.jobMemory": null,
+      "probeCoverageDistribution.getGenomeFile.timeout": null,
+      "probeCoverageDistribution.getGenomeFile.modules": null,
+      "probeCoverageDistribution.outputFileNamePrefix": "GLCS_0002_Ly_R_PE_4141_WG_S9_L001",
+      "probeCoverageDistribution.Rplot.jobMemory": null,
+      "probeCoverageDistribution.Rplot.timeout": null,
+      "probeCoverageDistribution.Rplot.modules": null,
+      "probeCoverageDistribution.splitBed.jobMemory": null,
+      "probeCoverageDistribution.splitBed.jobMemory": null,
+      "probeCoverageDistribution.zipResults.jobMemory": null,
+      "probeCoverageDistribution.zipResults.timeout": null
+    },
+    "engineArguments": {
+      "write_to_cache": false,
+      "read_from_cache": false
+    },
+    "metadata": {
+      "probeCoverageDistribution.coverageHistogram": {
+        "contents": [
+          {
+            "outputDirectory": "@SCRATCH@/@DATE@_Workflow_probeCoverageDistribution_test_01_@JENKINSID@"
+          }
+        ],
+        "type": "ALL"
+      },
+      "probeCoverageDistribution.plots": {
+        "contents": [
+          {
+            "outputDirectory": "@SCRATCH@/@DATE@_Workflow_probeCoverageDistribution_test_01_@JENKINSID@"
+          }
+        ],
+        "type": "ALL"
+      }
+    },
+    "validators": [
+      {
+        "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
+        "metrics_compare": "@CHECKOUT@/tests/compare.sh",
+        "output_metrics": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/output_metrics/test_01.metrics",
+        "type": "script"
+      }
+    ]
+  }
 ]
