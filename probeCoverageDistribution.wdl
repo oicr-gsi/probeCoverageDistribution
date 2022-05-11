@@ -102,7 +102,8 @@ workflow probeCoverageDistribution {
   }
 
   output {
-    File cvgFile = select_first([calcProbeCovDistScattered.coverageHistogram, calculateProbeCoverageDistribution.coverageHistogram])
+    Array[File]? cvgFiles = calcProbeCovDistScattered.coverageHistogram
+    File? cvgFile = calculateProbeCoverageDistribution.coverageHistogram
     File plots = select_first([zipScatteredResults.zipArchive, zipResults.zipArchive])
   }
 
