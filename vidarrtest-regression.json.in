@@ -6,6 +6,9 @@
       "probeCoverageDistribution.calculateProbeCoverageDistribution.jobMemory": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.timeout": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.modules": null,
+      "probeCoverageDistribution.calcProbeCovDistScattered.jobMemory": null,
+      "probeCoverageDistribution.calcProbeCovDistScattered.timeout": null,
+      "probeCoverageDistribution.calcProbeCovDistScattered.modules": null,
       "probeCoverageDistribution.bwaMem.adapter1": null,
       "probeCoverageDistribution.bwaMem.adapter2": null,
       "probeCoverageDistribution.bwaMem.adapterTrimmingLog_jobMemory": null,
@@ -72,10 +75,15 @@
       "probeCoverageDistribution.Rplot.jobMemory": null,
       "probeCoverageDistribution.Rplot.timeout": null,
       "probeCoverageDistribution.Rplot.modules": null,
+      "probeCoverageDistribution.RplotScattered.jobMemory": null,
+      "probeCoverageDistribution.RplotScattered.timeout": null,
+      "probeCoverageDistribution.RplotScattered.modules": null,
       "probeCoverageDistribution.splitBed.jobMemory": null,
       "probeCoverageDistribution.splitBed.jobMemory": null,
       "probeCoverageDistribution.zipResults.jobMemory": null,
-      "probeCoverageDistribution.zipResults.timeout": null
+      "probeCoverageDistribution.zipResults.timeout": null,
+      "probeCoverageDistribution.zipScatteredResults.jobMemory": null,
+      "probeCoverageDistribution.zipScatteredResults.timeout": null
     },
     "engineArguments": {
       "write_to_cache": false,
