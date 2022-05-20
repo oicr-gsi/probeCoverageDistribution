@@ -3,6 +3,20 @@
     "id": "test_01",
     "description": "probeCoverageDistribution workflow test",
     "arguments": {
+      "probeCoverageDistribution.bam": null,
+      "probeCoverageDistribution.bamIndex": null,
+      "probeCoverageDistribution.bed": {
+        "contents": {
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM.TS.hg19.probe.bed",
+          "externalIds": [
+            {
+              "id": "TEST",
+              "provider": "TEST"
+            }
+          ]
+        },
+        "type": "EXTERNAL"
+      },
       "probeCoverageDistribution.calculateProbeCoverageDistribution.jobMemory": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.timeout": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.modules": null,
@@ -72,6 +86,7 @@
       "probeCoverageDistribution.getGenomeFile.jobMemory": null,
       "probeCoverageDistribution.getGenomeFile.timeout": null,
       "probeCoverageDistribution.getGenomeFile.modules": null,
+      "probeCoverageDistribution.inputType": "fastq",
       "probeCoverageDistribution.outputFileNamePrefix": "GLCS_0002_Ly_R_PE_4141_WG_S9_L001",
       "probeCoverageDistribution.Rplot.jobMemory": null,
       "probeCoverageDistribution.Rplot.timeout": null,
