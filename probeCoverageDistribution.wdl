@@ -55,6 +55,7 @@ workflow probeCoverageDistribution {
           inputBam = select_first([bwaMem.bwaMemBam,bam]),
           inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
           inputBed = bedFile.right,
+          multipleBed = bedFile.left,
           genomeFile = getGenomeFile.genomeFile,
           outputPrefix = outputFileNamePrefix
       }
@@ -233,6 +234,7 @@ task calculateProbeCoverageDistribution {
     File inputBam
     File inputBai
     File inputBed
+    String? multipleBed
     File genomeFile
     Int jobMemory = 10
     Int timeout = 4
@@ -262,8 +264,8 @@ task calculateProbeCoverageDistribution {
     -a ~{inputBed} \
     -b ~{inputBam} \
     -sorted -g ~{genomeFile} \
-    > "~{outputPrefix}.cvghist.txt" || echo "Bedtools failed to produce output" \
-    | rm "~{outputPrefix}.cvghist.txt"
+    > ~{outputPrefix}~{"_" + multipleBed}.cvghist.txt || echo "Bedtools failed to produce output" \
+    | rm ~{outputPrefix}~{"_" + multipleBed}.cvghist.txt
     #use or "||" when command fails otherwise workflow succeeds on empty file
   >>>
 
@@ -274,7 +276,7 @@ task calculateProbeCoverageDistribution {
   }
 
   output {
-    File coverageHistogram = "~{outputPrefix}.cvghist.txt"
+    File coverageHistogram = "~{outputPrefix}~{"_" + multipleBed}.cvghist.txt"
   }
 }
 
@@ -304,11 +306,9 @@ task Rplot {
     }
   }
 
-  #String s = "~{if b then '${1 + i}' else 0}"
-
   command <<<
     Rscript --vanilla /.mounts/labs/gsiprojects/gsi/gsiusers/blujantoro/wdl/TSprobeCoverage/probeCoverageDistribution/src/plot_coverage_histograms.R \
-    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix}~{"_" + multipleBed}
+    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix}~{"_" + multipleBed} #TODO put the script in the probe-coverage-distribution module.
   >>>
 
   runtime {

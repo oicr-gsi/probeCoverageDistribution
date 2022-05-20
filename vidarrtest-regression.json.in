@@ -75,6 +75,7 @@
       "probeCoverageDistribution.Rplot.jobMemory": null,
       "probeCoverageDistribution.Rplot.timeout": null,
       "probeCoverageDistribution.Rplot.modules": null,
+      "probeCoverageDistribution.Rplot.multipleBed": null,
       "probeCoverageDistribution.RplotScattered.jobMemory": null,
       "probeCoverageDistribution.RplotScattered.timeout": null,
       "probeCoverageDistribution.RplotScattered.modules": null,
