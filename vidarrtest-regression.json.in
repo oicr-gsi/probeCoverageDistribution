@@ -81,7 +81,7 @@
       "probeCoverageDistribution.RplotScattered.timeout": null,
       "probeCoverageDistribution.RplotScattered.modules": null,
       "probeCoverageDistribution.splitBed.jobMemory": null,
-      "probeCoverageDistribution.splitBed.jobMemory": null,
+      "probeCoverageDistribution.splitBed.timeout": null,
       "probeCoverageDistribution.zipResults.jobMemory": null,
       "probeCoverageDistribution.zipResults.timeout": null,
       "probeCoverageDistribution.zipScatteredResults.jobMemory": null,
