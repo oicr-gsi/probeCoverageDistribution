@@ -6,6 +6,7 @@
       "probeCoverageDistribution.calculateProbeCoverageDistribution.jobMemory": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.timeout": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.modules": null,
+      "probeCoverageDistribution.calculateProbeCoverageDistribution.multipleBed": null,
       "probeCoverageDistribution.calcProbeCovDistScattered.jobMemory": null,
       "probeCoverageDistribution.calcProbeCovDistScattered.timeout": null,
       "probeCoverageDistribution.calcProbeCovDistScattered.modules": null,
