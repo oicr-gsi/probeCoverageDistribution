@@ -5,7 +5,7 @@
     "arguments": {
       "probeCoverageDistribution.bam": {
         "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam ",
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam",
           "externalIds": [
             {
               "id": "TEST",
@@ -17,7 +17,7 @@
       },
       "probeCoverageDistribution.bamIndex": {
         "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam ",
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam",
           "externalIds": [
             {
               "id": "TEST",
