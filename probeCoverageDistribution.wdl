@@ -49,25 +49,24 @@ workflow probeCoverageDistribution {
 
     scatter (bedFile in splitBed.splitBeds) {
 
+      String outputName = "~{outputFileNamePrefix}~{"_" + bedFile.left}"
+
       call calculateProbeCoverageDistribution as calcProbeCovDistScattered {
 
         input:
           inputBam = select_first([bwaMem.bwaMemBam,bam]),
           inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
           inputBed = bedFile.right,
-          multipleBed = bedFile.left,
           genomeFile = getGenomeFile.genomeFile,
-          outputPrefix = outputFileNamePrefix
+          outputPrefix = outputName
       }
 
       call Rplot as RplotScattered {
         input:
           coverageHist = calcProbeCovDistScattered.coverageHistogram,
           inputBed = bedFile.right,
-          outputPrefix = outputFileNamePrefix,
-          multipleBed = bedFile.left
+          outputPrefix = outputName,
       }
-
     }
 
     call zipResults as zipScatteredResults {
@@ -93,7 +92,6 @@ workflow probeCoverageDistribution {
         coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
         inputBed = bed,
         outputPrefix = outputFileNamePrefix,
-        #multipleBed = false
     }
 
     call zipResults{
@@ -234,7 +232,6 @@ task calculateProbeCoverageDistribution {
     File inputBam
     File inputBai
     File inputBed
-    String? multipleBed
     File genomeFile
     Int jobMemory = 10
     Int timeout = 4
@@ -259,13 +256,14 @@ task calculateProbeCoverageDistribution {
     }
   }
 
+
   command <<<
     bedtools coverage -hist \
     -a ~{inputBed} \
     -b ~{inputBam} \
     -sorted -g ~{genomeFile} \
-    > ~{outputPrefix}~{"_" + multipleBed}.cvghist.txt || echo "Bedtools failed to produce output" \
-    | rm ~{outputPrefix}~{"_" + multipleBed}.cvghist.txt
+    > ~{outputPrefix}.cvghist.txt || echo "Bedtools failed to produce output" \
+    | rm ~{outputPrefix}.cvghist.txt
     #use or "||" when command fails otherwise workflow succeeds on empty file
   >>>
 
@@ -276,7 +274,7 @@ task calculateProbeCoverageDistribution {
   }
 
   output {
-    File coverageHistogram = "~{outputPrefix}~{"_" + multipleBed}.cvghist.txt"
+    File coverageHistogram = "~{outputPrefix}.cvghist.txt"
   }
 }
 
@@ -285,7 +283,6 @@ task Rplot {
     File inputBed
     File coverageHist
     String outputPrefix
-    String? multipleBed
     Int jobMemory = 20
     Int timeout = 4
     String modules = "probe-coverage-distribution/1.0"
@@ -308,7 +305,7 @@ task Rplot {
 
   command <<<
     Rscript --vanilla /.mounts/labs/gsiprojects/gsi/gsiusers/blujantoro/wdl/TSprobeCoverage/probeCoverageDistribution/src/plot_coverage_histograms.R \
-    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix}~{"_" + multipleBed} #TODO put the script in the probe-coverage-distribution module.
+    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} #TODO put the script in the probe-coverage-distribution module.
   >>>
 
   runtime {
