@@ -7,4 +7,4 @@ set -o pipefail
 cd $1
 
 #find all files, return their md5sums to std out
-find . -xtype f -exec md5sum {} +
+cat *cvghist.txt | md5sum

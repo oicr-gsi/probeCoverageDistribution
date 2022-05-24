@@ -1,10 +1,32 @@
 [
   {
     "id": "test_01",
-    "description": "probeCoverageDistribution workflow test",
+    "description": "probeCoverageDistribution workflow test on bam input with LLDM panel",
     "arguments": {
-      "probeCoverageDistribution.bam": null,
-      "probeCoverageDistribution.bamIndex": null,
+      "probeCoverageDistribution.bam": {
+        "contents": {
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam ",
+          "externalIds": [
+            {
+              "id": "TEST",
+              "provider": "TEST"
+            }
+          ]
+        },
+        "type": "EXTERNAL"
+      },
+      "probeCoverageDistribution.bamIndex": {
+        "contents": {
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam ",
+          "externalIds": [
+            {
+              "id": "TEST",
+              "provider": "TEST"
+            }
+          ]
+        },
+        "type": "EXTERNAL"
+      },
       "probeCoverageDistribution.bed": {
         "contents": {
           "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM.TS.hg19.probe.bed",
@@ -42,11 +64,11 @@
       "probeCoverageDistribution.bwaMem.indexBam_modules": null,
       "probeCoverageDistribution.bwaMem.indexBam_timeout": null,
       "probeCoverageDistribution.bwaMem.numChunk": null,
-      "probeCoverageDistribution.bwaMem.readGroups": "'@RG\\tID:PROBECOVERAGEDISTRIBUTION\\tSM:SAMPLE'",
+      "probeCoverageDistribution.bwaMem.readGroups": null,
       "probeCoverageDistribution.bwaMem.runBwaMem_addParam": null,
-      "probeCoverageDistribution.bwaMem.runBwaMem_bwaRef": "$HG19_BWA_INDEX_ROOT/hg19_random.fa",
+      "probeCoverageDistribution.bwaMem.runBwaMem_bwaRef": null,
       "probeCoverageDistribution.bwaMem.runBwaMem_jobMemory": null,
-      "probeCoverageDistribution.bwaMem.runBwaMem_modules": "samtools/1.9 bwa/0.7.12 hg19-bwa-index/0.7.12",
+      "probeCoverageDistribution.bwaMem.runBwaMem_modules": null,
       "probeCoverageDistribution.bwaMem.runBwaMem_threads": null,
       "probeCoverageDistribution.bwaMem.runBwaMem_timeout": null,
       "probeCoverageDistribution.bwaMem.slicerR1_jobMemory": null,
@@ -59,35 +81,13 @@
       "probeCoverageDistribution.bwaMem.trimMinQuality": null,
       "probeCoverageDistribution.countColumns.jobMemory": null,
       "probeCoverageDistribution.countColumns.timeout": null,
-      "probeCoverageDistribution.fastqR1": {
-        "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/GLCS_0002_Ly_R_PE_4141_WG_S9_L001_R1_001.fastq.gz",
-          "externalIds": [
-            {
-              "id": "TEST",
-              "provider": "TEST"
-            }
-          ]
-        },
-        "type": "EXTERNAL"
-      },
-      "probeCoverageDistribution.fastqR2": {
-        "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/GLCS_0002_Ly_R_PE_4141_WG_S9_L001_R2_001.fastq.gz",
-          "externalIds": [
-            {
-              "id": "TEST",
-              "provider": "TEST"
-            }
-          ]
-        },
-        "type": "EXTERNAL"
-      },
+      "probeCoverageDistribution.fastqR1": null,
+      "probeCoverageDistribution.fastqR2": null,
       "probeCoverageDistribution.getGenomeFile.jobMemory": null,
       "probeCoverageDistribution.getGenomeFile.timeout": null,
       "probeCoverageDistribution.getGenomeFile.modules": null,
-      "probeCoverageDistribution.inputType": "fastq",
-      "probeCoverageDistribution.outputFileNamePrefix": "GLCS_0002_Ly_R_PE_4141_WG_S9_L001",
+      "probeCoverageDistribution.inputType": "bam",
+      "probeCoverageDistribution.outputFileNamePrefix": "LLDM_0031_Ln_P_PE_307_TS",
       "probeCoverageDistribution.Rplot.jobMemory": null,
       "probeCoverageDistribution.Rplot.timeout": null,
       "probeCoverageDistribution.Rplot.modules": null,
