@@ -99,20 +99,20 @@ for (pool in unique(df.all$pool)){
     #print(pool)
     df2<-df.all
     df2$set<-ifelse(df2$pool== pool, pool,"Other pools")
-    
+
     subset1<-rownames(bed[bed$pool!=pool,])
     subset2<-sample(rownames(bed[bed$pool==pool,]),4000)
     subset<-c(subset1,subset2)
-    
+
     df2<-df2[df2$interval %in% subset,]
-    
+
     g2<-ggplot(df2[df2$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id,set)),y=value)) + geom_point() +
       facet_wrap(~set,ncol=2,scales="free_x") +
       scale_y_log10()+
       theme(axis.text.x = element_blank()) +
       guides(x = "none") +
       labs(title=paste ("Mean interval coverage sorted", sep = "")) + xlab("interval") + ylab("depth")
-    
+
     ############# PLOT LARGE POOL
     large_set <- rownames(bed[bed$pool== pool,])
     df.largePool <- df.all[df.all$interval %in% large_set,]
@@ -121,7 +121,7 @@ for (pool in unique(df.all$pool)){
       geom_bar(stat="identity") +
       theme(axis.text.x = element_blank()) +
       labs(title=paste("                                                                                                  ",id, "\nMean interval coverage - Large pool", sep = "")) + xlab("interval") + ylab("depth")
-    ggsave(g3,file=paste0(id,"mean_interval_coverage_large_pool.png"),dev="png",height=10,width=15)
+    ggsave(g3,file=paste0(id,"_mean_interval_coverage_large_pool.png"),dev="png",height=10,width=15)
 
 
     ############# Pool and Subsampled Large pool
@@ -136,7 +136,7 @@ for (pool in unique(df.all$pool)){
       #facet_wrap(~id,ncol=4) +
       theme(axis.text.x = element_blank()) +
       labs(title=paste ("Mean interval coverage - Pools and subsampled large pool", sep = "")) + xlab("interval") + ylab("depth")
-    ggsave(g4,file=paste0(id,"mean_interval_coverage_pools_subsampled_largepool.png"),dev="png",height=10,width=15)
+    ggsave(g4,file=paste0(id,"_mean_interval_coverage_pools_subsampled_largepool.png"),dev="png",height=10,width=15)
   }
 }
 
