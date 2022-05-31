@@ -29,7 +29,7 @@
       },
       "probeCoverageDistribution.bed": {
         "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM.TS.hg19.probe.bed",
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM.EXOME.TS.hg19.bed",
           "externalIds": [
             {
               "id": "TEST",
