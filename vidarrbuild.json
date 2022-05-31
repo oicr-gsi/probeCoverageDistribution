@@ -1,0 +1,6 @@
+{
+    "names": [
+        "probeCoverageDistribution"
+    ],
+    "wdl": "probeCoverageDistribution.wdl"
+}
