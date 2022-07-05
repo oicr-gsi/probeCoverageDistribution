@@ -173,7 +173,7 @@ for (df_plot in to_plot) {
 }
 
 g0all <-ggarrange(plotlist=g0_list, nrow = length(g0_list))
-g0all <- annotate_figure(g1all, top = text_grob("Mean Interval coverage"))
+g0all <- annotate_figure(g0all, top = text_grob("Mean Interval coverage"))
 ggsave(g0all,file=paste0("/Users/blujantoro/probeCoverageDev/test/",id, "_mean_interval_coverage.png"),dev="png",height=10,width=15)
 
 g1all <-ggarrange(plotlist=g1_list, nrow = length(g1_list) )
