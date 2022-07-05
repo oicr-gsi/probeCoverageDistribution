@@ -6,14 +6,16 @@ library(optparse)
 option_list = list(
   make_option(c("-c", "--cvgFile"), type="character", default=NA, help="coverage file from bedtools"),
   make_option(c("-b", "--bedFile"),  type="character", default=NA, help="input bed file", metavar="character"),
-  make_option(c("-o", "--outputBasename"),type="character", default=NA, help="basename for plots created", metavar="character")
+  make_option(c("-o", "--outputBasename"),type="character", default=NA, help="basename for plots created", metavar="character"),
+  make_option(c("-l", "--listSplit"),type="character", default=NA, help="list of views to split", metavar="character")
 )
 
 opt_parser <- OptionParser(option_list=option_list);
 opt <- parse_args(opt_parser);
 
-# test if there is at least one argument: if not, return an error
-if (length(option_list)!=3) {
+# error if missing argument: if not, return an error
+if (is.na(opt$cvgFile) || is.na(opt$bedFile) || is.na(opt$outputBasename)) {
+  print("Missing argument")
   print_help(opt_parser)
   stop("", call.=FALSE)
 }
@@ -27,6 +29,7 @@ options(bitmapType='cairo')
 
 #read bed file
 bed<-read.delim(file=opt$bedFile, sep="\t",header=F)
+#bed<-read.delim("/Volumes/blujantoro/wdl_dev/probecov/LLHC_Panel.TS.hg19.pool_1.bed", sep="\t",header=F)
 
 colnames(bed)<-c("chrom","start","stop","pool")
 bed<-bed[order(bed$pool,bed$chrom,bed$start),]
@@ -34,10 +37,12 @@ rownames(bed)<-paste(bed$chrom,":",bed$start,"-",bed$stop,sep="")
 
 df.all<-NULL
 id<-opt$outputBasename
-
+#id<-"GLCS_0002_Ly_R_PE_392_TS"
 
 #read coverage histogram
 hist<-read.delim(file=opt$cvgFile,sep="\t",as.is=T,header=F)
+#hist<-read.delim(file="/Volumes/blujantoro/wdl_dev/probecov/GLCS_0002_Ly_R_PE_392_TS.cvghist.txt",sep="\t",as.is=T,header=F)
+
 
 colnames(hist)<-c("chrom","start","stop","pool","depth","bases","size","proportion")
 hist<-hist[hist$chrom != "all",]
@@ -47,6 +52,7 @@ hist$interval<-paste(hist$chrom,":",hist$start,"-",hist$stop,sep="")
 mean_coverage<-by(hist,hist$interval,function(x){sum(x$depth*x$bases)/as.numeric(x$size[1])})
 intervals<-as.vector(names(mean_coverage))
 mean_coverage<-as.vector(mean_coverage)
+max_coverage <- max(mean_coverage)
 
 #create dataframe
 df<-data.frame(id=id,interval=intervals,metric="cvg_mean",value=mean_coverage)
@@ -63,81 +69,117 @@ df<-data.frame(id=id,interval=intervals,no_coverage=no_coverage)
 df<-data.frame(id=id,interval=intervals,metric="cvg0",value=no_coverage)
 df.all<-rbind(df.all,df)
 
+#CALCULATE PERCENT COVERED
+hist$covered<-ifelse(hist$depth>0,1,0)
+hist$proportion2<-hist$proportion*hist$covered
+percent_covered <- by(hist,hist$interval,function(x){sum(x$proportion2)})
+intervals<-as.vector(names(percent_covered))
+percent_covered<-as.vector(percent_covered)
+#df<-data.frame(id=id,interval=intervals,percent_covered=percent_covered)
+df<-data.frame(id=id,interval=intervals,metric="pct_cvd",value=percent_covered)
+df.all<-rbind(df.all,df)
+
 ### set intreval as factor to order by intervsla in the bed file
 df.all$interval<-factor(df.all$interval,levels=rownames(bed))
 df.all$pool<-bed[df.all$interval,]$pool
 
-#save.image(file="image.RData")
-############# All plot
-g0<-ggplot(df.all[df.all$metric=="cvg_mean",], aes(x=interval,y=value,col=pool)) +
-  geom_bar(stat="identity") +
-  theme( axis.text.x = element_blank()) +
-  labs(title=paste("                                                                                                  ",id, "\nMean Interval coverage", sep = "")) + xlab("interval") + ylab("depth")
-ggsave(g0,file=paste0(id,"_mean_interval_coverage.png"),dev="png",height=10,width=15)
 
-############# Percent coverage
-cvg0<-df.all[df.all$metric=="cvg0",]
-cvg_mean<-df.all[df.all$metric=="cvg_mean",]
-percent_intervals_with_coverage<-aggregate(value~id + pool, data=cvg_mean,function(x){length(x[x>0])/length(x)*100})
+#df_test <- df.all
+#test <- c("EXOME")
+to_plot <- list()
+#test <- NA
 
-g1<-ggplot(percent_intervals_with_coverage,aes(y=value,x=pool,col=pool)) +
-  geom_bar(stat="identity") +
-  #facet_wrap(~id,ncol=3) +
-  theme(axis.text.x = element_blank()) +
-  labs(title=paste ("Percent of Intervals with coverage", sep = "")) + xlab("subset") + ylab("percent")
-ggsave(g1,file=paste0(id,"_percent_intervals_w_coverage.png"),dev="png",height=10,width=15)
+if (!is.na(opt$listSplit)) {
+#if (!is.na(test)) {
+  list_to_split <- strsplit(opt$listSplit, split = ",")
+  #list_to_split <- strsplit(test, split = ",")
+  print(list_to_split)
+  i = 0
 
-############# Sorted coverage
-g2<-ggplot(df.all[df.all$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id)),y=value)) + geom_point() +
-  scale_y_log10()+
-  theme(axis.text.x = element_blank()) +
-  guides(x = "none") +
-  labs(title=paste ("Mean interval coverage sorted", sep = "")) + xlab("interval") + ylab("depth")
-
-for (pool in unique(df.all$pool)){
-  if (length(which(df.all$pool == pool)) > 10000 ){
-    #print(pool)
-    df2<-df.all
-    df2$set<-ifelse(df2$pool== pool, pool,"Other pools")
-
-    subset1<-rownames(bed[bed$pool!=pool,])
-    subset2<-sample(rownames(bed[bed$pool==pool,]),4000)
-    subset<-c(subset1,subset2)
-
-    df2<-df2[df2$interval %in% subset,]
-
-    g2<-ggplot(df2[df2$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id,set)),y=value)) + geom_point() +
-      facet_wrap(~set,ncol=2,scales="free_x") +
-      scale_y_log10()+
-      theme(axis.text.x = element_blank()) +
-      guides(x = "none") +
-      labs(title=paste ("Mean interval coverage sorted", sep = "")) + xlab("interval") + ylab("depth")
-
-    ############# PLOT LARGE POOL
-    large_set <- rownames(bed[bed$pool== pool,])
-    df.largePool <- df.all[df.all$interval %in% large_set,]
-
-    g3<-ggplot(df.largePool[df.largePool$metric=="cvg_mean",], aes(x=interval,y=value,col=pool)) +
-      geom_bar(stat="identity") +
-      theme(axis.text.x = element_blank()) +
-      labs(title=paste("                                                                                                  ",id, "\nMean interval coverage - Large pool", sep = "")) + xlab("interval") + ylab("depth")
-    ggsave(g3,file=paste0(id,"_mean_interval_coverage_large_pool.png"),dev="png",height=10,width=15)
-
-
-    ############# Pool and Subsampled Large pool
-    set1<-rownames(bed[bed$pool!=pool,])
-    set2<-sample(rownames(bed[bed$pool==pool,]),800)
-    set<-c(set1,set2)
-    df.set<-df.all[df.all$interval %in% set,]
-
-    ### SAMPLE FURTHER
-    g4<-ggplot(df.set[df.set$metric=="cvg_mean",],aes(x=interval,y=value,col=pool)) +
-      geom_bar(stat="identity") +
-      #facet_wrap(~id,ncol=4) +
-      theme(axis.text.x = element_blank()) +
-      labs(title=paste ("Mean interval coverage - Pools and subsampled large pool", sep = "")) + xlab("interval") + ylab("depth")
-    ggsave(g4,file=paste0(id,"_mean_interval_coverage_pools_subsampled_largepool.png"),dev="png",height=10,width=15)
+  for (pool in list_to_split) {
+    print(pool)
+    print(nrow(df.all))
+    #create a subset with only the pool
+    df.subset <- df.all[df.all$pool == pool,] 
+    print(nrow(df.subset))
+    
+    #remove pool from the df.all
+    df.all <- df.all[df.all$pool != pool,] 
+    #df_test <- df_test[df_test$pool != pool,] 
+    
+    #append the pool 
+    to_plot[[i]] <- df.subset
+    i = i + 1
   }
+
+  #append the all pool
+  to_plot[[length(list_to_split)+1]] <- df.all
+} else {
+    to_plot[[1]] <- df.all
 }
 
-ggsave(g2,file=paste0(id, "_mean_interval_coverage_sorted.png"),dev="png",height=10,width=15)
+
+g0_list <- list()
+g1_list <- list()
+g2_list <- list()
+
+index = 0
+
+for (df_plot in to_plot) {
+  index = index + 1
+  print(index)
+  print(nrow(df_plot))
+  
+  ############# All plot
+  g0<-ggplot(df_plot[df_plot$metric=="cvg_mean",], aes(x=interval,y=value,col=pool)) +
+    geom_bar(stat="identity") +
+    theme( axis.text.x = element_blank()) +
+    labs(title=paste("                                                                                                  ",id, "\nMean Interval coverage", sep = "")) + 
+    xlab("interval") + ylab("depth")
+  #ggsave(g0,file=paste0(id,"_mean_interval_coverage.png"),dev="png",height=10,width=15)
+  g0_list[[index]] <- g0
+  
+  ############# Percent coverage
+  # cvg0<-df_plot[df_plot$metric=="cvg0",]
+  # cvg_mean<-df_plot[df_plot$metric=="cvg_mean",]
+  # percent_intervals_with_coverage<-aggregate(value~id + pool, data=cvg_mean,function(x){length(x[x>0])/length(x)*100})
+  # 
+  # g1<-ggplot(percent_intervals_with_coverage,aes(y=value,x=pool,col=pool)) +
+  #   geom_bar(stat="identity") +
+  #   ylim(0, 100) +
+  #   #facet_wrap(~id,ncol=3) +
+  #   theme(axis.text.x = element_blank()) +
+  #   labs(title=paste ("Percent of Intervals with coverage", sep = "")) + xlab("subset") + ylab("percent")
+  # #ggsave(g1,file=paste0(id,"_percent_intervals_w_coverage.png"),dev="png",height=10,width=15)
+  
+  g1<-ggplot(df_plot[df_plot$metric=="pct_cvd",], aes(x=as.factor(pool), y=value, col=pool)) + 
+    geom_boxplot(fill="slateblue", alpha=0.2) + 
+    labs(title=paste ("Proportion of Interval covered", sep = "")) + xlab("pool") + ylab("proportion")+
+    theme(axis.text.x = element_blank()) #+
+  g1_list[[index]] <- g1
+  
+  ############# Sorted coverage
+  g2<-ggplot(df_plot[df_plot$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id)),y=value,col=pool)) + 
+    #scale_x_continuous(limits = c(0, 10000)) +
+    ylim(0, max_coverage) +
+    #geom_point() +
+    geom_bar(stat="identity") +
+    #scale_y_log10()+
+    theme(axis.text.x = element_blank()) +
+    guides(x = "none") +
+    labs(title=paste ("Mean interval coverage sorted", sep = "")) + xlab("interval") + ylab("depth")
+  #ggsave(g2,file=paste0(id, "_mean_interval_coverage_sorted.png"),dev="png",height=10,width=15)
+  g2_list[[index]] <- g2
+}
+
+g0all <-ggarrange(plotlist=g0_list, nrow = length(g0_list))
+g0all <- annotate_figure(g1all, top = text_grob("Mean Interval coverage"))
+ggsave(g0all,file=paste0("/Users/blujantoro/probeCoverageDev/test/",id, "_mean_interval_coverage.png"),dev="png",height=10,width=15)
+
+g1all <-ggarrange(plotlist=g1_list, nrow = length(g1_list) )
+g1all <- annotate_figure(g1all, top = text_grob("Proportion of Interval covered"))
+ggsave(g1all,file=paste0("/Users/blujantoro/probeCoverageDev/test/",id, "_interval_proportion_covered.png"),dev="png",height=10,width=15)
+
+g2all <-ggarrange(plotlist=g2_list, ncol = length(g2_list))
+g1all <- annotate_figure(g1all, top = text_grob("Mean interval coverage sorted"))
+ggsave(g2all,file=paste0("/Users/blujantoro/probeCoverageDev/test/",id, "_mean_interval_coverage_sorted.png"),dev="png",height=10,width=15)
