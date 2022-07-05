@@ -100,14 +100,14 @@ if (!is.na(opt$listSplit)) {
     print(pool)
     print(nrow(df.all))
     #create a subset with only the pool
-    df.subset <- df.all[df.all$pool == pool,] 
+    df.subset <- df.all[df.all$pool == pool,]
     print(nrow(df.subset))
-    
+
     #remove pool from the df.all
-    df.all <- df.all[df.all$pool != pool,] 
-    #df_test <- df_test[df_test$pool != pool,] 
-    
-    #append the pool 
+    df.all <- df.all[df.all$pool != pool,]
+    #df_test <- df_test[df_test$pool != pool,]
+
+    #append the pool
     to_plot[[i]] <- df.subset
     i = i + 1
   }
@@ -129,21 +129,21 @@ for (df_plot in to_plot) {
   index = index + 1
   print(index)
   print(nrow(df_plot))
-  
+
   ############# All plot
   g0<-ggplot(df_plot[df_plot$metric=="cvg_mean",], aes(x=interval,y=value,col=pool)) +
     geom_bar(stat="identity") +
     theme( axis.text.x = element_blank()) +
-    labs(title=paste("                                                                                                  ",id, "\nMean Interval coverage", sep = "")) + 
+    labs(title=paste("                                                                                                  ",id, "\nMean Interval coverage", sep = "")) +
     xlab("interval") + ylab("depth")
   #ggsave(g0,file=paste0(id,"_mean_interval_coverage.png"),dev="png",height=10,width=15)
   g0_list[[index]] <- g0
-  
+
   ############# Percent coverage
   # cvg0<-df_plot[df_plot$metric=="cvg0",]
   # cvg_mean<-df_plot[df_plot$metric=="cvg_mean",]
   # percent_intervals_with_coverage<-aggregate(value~id + pool, data=cvg_mean,function(x){length(x[x>0])/length(x)*100})
-  # 
+  #
   # g1<-ggplot(percent_intervals_with_coverage,aes(y=value,x=pool,col=pool)) +
   #   geom_bar(stat="identity") +
   #   ylim(0, 100) +
@@ -151,15 +151,15 @@ for (df_plot in to_plot) {
   #   theme(axis.text.x = element_blank()) +
   #   labs(title=paste ("Percent of Intervals with coverage", sep = "")) + xlab("subset") + ylab("percent")
   # #ggsave(g1,file=paste0(id,"_percent_intervals_w_coverage.png"),dev="png",height=10,width=15)
-  
-  g1<-ggplot(df_plot[df_plot$metric=="pct_cvd",], aes(x=as.factor(pool), y=value, col=pool)) + 
-    geom_boxplot(fill="slateblue", alpha=0.2) + 
+
+  g1<-ggplot(df_plot[df_plot$metric=="pct_cvd",], aes(x=as.factor(pool), y=value, col=pool)) +
+    geom_boxplot(fill="slateblue", alpha=0.2) +
     labs(title=paste ("Proportion of Interval covered", sep = "")) + xlab("pool") + ylab("proportion")+
     theme(axis.text.x = element_blank()) #+
   g1_list[[index]] <- g1
-  
+
   ############# Sorted coverage
-  g2<-ggplot(df_plot[df_plot$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id)),y=value,col=pool)) + 
+  g2<-ggplot(df_plot[df_plot$metric == "cvg_mean",],aes(x=reorder_within(interval,value,list(id)),y=value,col=pool)) +
     #scale_x_continuous(limits = c(0, 10000)) +
     ylim(0, max_coverage) +
     #geom_point() +
@@ -174,12 +174,12 @@ for (df_plot in to_plot) {
 
 g0all <-ggarrange(plotlist=g0_list, nrow = length(g0_list))
 g0all <- annotate_figure(g0all, top = text_grob("Mean Interval coverage"))
-ggsave(g0all,file=paste0("/Users/blujantoro/probeCoverageDev/test/",id, "_mean_interval_coverage.png"),dev="png",height=10,width=15)
+ggsave(g0all,file=paste0(id, "_mean_interval_coverage.png"),dev="png",height=10,width=15)
 
 g1all <-ggarrange(plotlist=g1_list, nrow = length(g1_list) )
 g1all <- annotate_figure(g1all, top = text_grob("Proportion of Interval covered"))
-ggsave(g1all,file=paste0("/Users/blujantoro/probeCoverageDev/test/",id, "_interval_proportion_covered.png"),dev="png",height=10,width=15)
+ggsave(g1all,file=paste0(id, "_interval_proportion_covered.png"),dev="png",height=10,width=15)
 
 g2all <-ggarrange(plotlist=g2_list, ncol = length(g2_list))
 g1all <- annotate_figure(g1all, top = text_grob("Mean interval coverage sorted"))
-ggsave(g2all,file=paste0("/Users/blujantoro/probeCoverageDev/test/",id, "_mean_interval_coverage_sorted.png"),dev="png",height=10,width=15)
+ggsave(g2all,file=paste0(id, "_mean_interval_coverage_sorted.png"),dev="png",height=10,width=15)
