@@ -26,7 +26,7 @@ workflow probeCoverageDistribution {
         fastqR2 = select_first([fastqR2]),
         outputFileNamePrefix = outputFileNamePrefix,
         readGroups = "'@RG\\tID:ID\\tSM:SAMPLE'",
-        doTrim = false #TEST CHECK LATER
+        doTrim = false
     }
   }
 
@@ -35,75 +35,31 @@ workflow probeCoverageDistribution {
       inputBam = select_first([bwaMem.bwaMemBam,bam])
   }
 
-  call countColumns {
+  #workflow assumes all bed files have 4
+  call calculateProbeCoverageDistribution {
     input:
-      inputBed = bed
-  }
-
-  if (countColumns.numberColumns == 5) {
-    #workflow assumes all bed files have 4 or 5 columns
-    call splitBed {
-      input:
-        inputBed = bed
-    }
-
-    scatter (bedFile in splitBed.splitBeds) {
-
-      String outputName = "~{outputFileNamePrefix}~{"_" + bedFile.left}"
-
-      call calculateProbeCoverageDistribution as calcProbeCovDistScattered {
-
-        input:
-          inputBam = select_first([bwaMem.bwaMemBam,bam]),
-          inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
-          inputBed = bedFile.right,
-          genomeFile = getGenomeFile.genomeFile,
-          outputPrefix = outputName
-      }
-
-      call Rplot as RplotScattered {
-        input:
-          coverageHist = calcProbeCovDistScattered.coverageHistogram,
-          inputBed = bedFile.right,
-          outputPrefix = outputName,
-      }
-    }
-
-    call zipResults as zipScatteredResults {
-     input:
-       inFiles=flatten(RplotScattered.Rplots),
-       outputPrefix = outputFileNamePrefix
-    }
-  }
-
-  if (countColumns.numberColumns == 4) {
-    #workflow assumes all bed files have 4 or 5 columns
-    call calculateProbeCoverageDistribution {
-      input:
-        inputBam = select_first([bwaMem.bwaMemBam,bam]),
-        inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
-        inputBed = bed,
-        genomeFile = getGenomeFile.genomeFile,
-        outputPrefix = outputFileNamePrefix
-    }
-
-    call Rplot {
-      input:
-        coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
-        inputBed = bed,
-        outputPrefix = outputFileNamePrefix,
-    }
-
-    call zipResults{
-      input: inFiles=Rplot.Rplots,
+      inputBam = select_first([bwaMem.bwaMemBam,bam]),
+      inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
+      inputBed = bed,
+      genomeFile = getGenomeFile.genomeFile,
       outputPrefix = outputFileNamePrefix
-    }
+  }
+
+  call Rplot {
+    input:
+      coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
+      inputBed = bed,
+      outputPrefix = outputFileNamePrefix,
+  }
+
+  call zipResults{
+    input: inFiles=Rplot.Rplots,
+    outputPrefix = outputFileNamePrefix
   }
 
   output {
-    Array[File]? cvgFiles = calcProbeCovDistScattered.coverageHistogram
-    File? cvgFile = calculateProbeCoverageDistribution.coverageHistogram
-    File plots = select_first([zipScatteredResults.zipArchive, zipResults.zipArchive])
+    File cvgFile = calculateProbeCoverageDistribution.coverageHistogram
+    File plots = zipResults.zipArchive
   }
 
   meta {
@@ -157,73 +113,6 @@ task getGenomeFile {
 
   output {
     File genomeFile = "genome.txt"
-  }
-}
-
-task countColumns {
-  input {
-    File inputBed
-    Int jobMemory = 10
-    Int timeout = 4
-  }
-
-  parameter_meta {
-    inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
-    jobMemory: "Memory (in GB) allocated for job."
-    timeout: "Maximum amount of time (in hours) the task can run for."
-  }
-
-  meta {
-    output_meta : {
-      countColumns: "Genome file the defines the expected chromosome order in the bam file."
-    }
-  }
-
-  command <<<
-    cat ~{inputBed} | awk '{print NF}' | sort -nu > number_columns.txt
-  >>>
-
-  runtime {
-    memory: "~{jobMemory} GB"
-    timeout: "~{timeout}"
-  }
-
-  output {
-    Int numberColumns = read_int("number_columns.txt")
-  }
-}
-
-task splitBed {
-  input {
-    File inputBed
-    Int jobMemory = 10
-    Int timeout = 4
-  }
-
-  parameter_meta {
-    inputBed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
-    jobMemory: "Memory (in GB) allocated for job."
-    timeout: "Maximum amount of time (in hours) the task can run for."
-  }
-
-  meta {
-    output_meta : {
-      splitBeds: "Bed file split when there are two name columns (feature description)."
-    }
-  }
-
-  command <<<
-    cat ~{inputBed} | cut -f 1-4 > probes_1.bed
-    cat ~{inputBed} | cut -f 1-3,5 > probes_2.bed
-  >>>
-
-  runtime {
-    memory: "~{jobMemory} GB"
-    timeout: "~{timeout}"
-  }
-
-  output {
-    Array[Pair[String, File]] splitBeds = [("1",  "probes_1.bed"),("2",  "probes_2.bed")]
   }
 }
 
@@ -286,6 +175,7 @@ task Rplot {
     Int jobMemory = 20
     Int timeout = 4
     String modules = "probe-coverage-distribution/1.0"
+    #String modules = "probe-coverage-distribution/2.0"
   }
 
   parameter_meta {
@@ -305,7 +195,9 @@ task Rplot {
 
   command <<<
     Rscript --vanilla /.mounts/labs/gsiprojects/gsi/gsiusers/blujantoro/wdl/TSprobeCoverage/probeCoverageDistribution/src/plot_coverage_histograms.R \
-    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} #TODO put the script in the probe-coverage-distribution module.
+    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix}
+    #Rscript --vanilla $PROBE_COVERAGE_DISTRIBUTION_ROOT/plot_coverage_histograms.R \
+    #-b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix}
   >>>
 
   runtime {
