@@ -134,7 +134,7 @@ for (df_plot in to_plot) {
   g0<-ggplot(df_plot[df_plot$metric=="cvg_mean",], aes(x=interval,y=value,col=pool)) +
     geom_bar(stat="identity") +
     theme( axis.text.x = element_blank()) +
-    labs(title=paste("                                                                                                  ",id, "\nMean Interval coverage", sep = "")) +
+    #labs(title=paste(+
     xlab("interval") + ylab("depth")
   #ggsave(g0,file=paste0(id,"_mean_interval_coverage.png"),dev="png",height=10,width=15)
   g0_list[[index]] <- g0
@@ -154,7 +154,8 @@ for (df_plot in to_plot) {
 
   g1<-ggplot(df_plot[df_plot$metric=="pct_cvd",], aes(x=as.factor(pool), y=value, col=pool)) +
     geom_boxplot(fill="slateblue", alpha=0.2) +
-    labs(title=paste ("Proportion of Interval covered", sep = "")) + xlab("pool") + ylab("proportion")+
+    #labs(title=paste ("Proportion of Interval covered", sep = "")) + 
+    xlab("pool") + ylab("proportion")+
     theme(axis.text.x = element_blank()) #+
   g1_list[[index]] <- g1
 
@@ -167,7 +168,8 @@ for (df_plot in to_plot) {
     #scale_y_log10()+
     theme(axis.text.x = element_blank()) +
     guides(x = "none") +
-    labs(title=paste ("Mean interval coverage sorted", sep = "")) + xlab("interval") + ylab("depth")
+    #labs(title=paste ("Mean interval coverage sorted", sep = "")) + 
+    xlab("interval") + ylab("depth")
   #ggsave(g2,file=paste0(id, "_mean_interval_coverage_sorted.png"),dev="png",height=10,width=15)
   g2_list[[index]] <- g2
 }
@@ -181,5 +183,5 @@ g1all <- annotate_figure(g1all, top = text_grob("Proportion of Interval covered"
 ggsave(g1all,file=paste0(id, "_interval_proportion_covered.png"),dev="png",height=10,width=15)
 
 g2all <-ggarrange(plotlist=g2_list, ncol = length(g2_list))
-g1all <- annotate_figure(g1all, top = text_grob("Mean interval coverage sorted"))
+g2all <- annotate_figure(g2all, top = text_grob("Mean interval coverage sorted"))
 ggsave(g2all,file=paste0(id, "_mean_interval_coverage_sorted.png"),dev="png",height=10,width=15)
