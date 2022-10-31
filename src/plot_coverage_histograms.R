@@ -35,16 +35,16 @@ if (ncol(bed) == 3 && ncol(hist) == 7) {
   colnames(bed)<-c("chrom","start","stop")
   bed$pool <- "pool_1"
   bed <- bed[, c("chrom","start","stop","pool")]
-  
+
   colnames(hist)<-c("chrom","start","stop","depth","bases","size","proportion")
   hist$pool <- "pool_1"
   hist <- hist[, c("chrom","start","stop","pool","depth","bases","size","proportion")]
-  
+
 } else {
   colnames(bed)<-c("chrom","start","stop","pool")
   colnames(hist)<-c("chrom","start","stop","pool","depth","bases","size","proportion")
 }
-    
+
 
 bed<-bed[order(bed$pool,bed$chrom,bed$start),]
 rownames(bed)<-paste(bed$chrom,":",bed$start,"-",bed$stop,sep="")
@@ -82,7 +82,6 @@ hist$proportion2<-hist$proportion*hist$covered
 percent_covered <- by(hist,hist$interval,function(x){sum(x$proportion2)})
 intervals<-as.vector(names(percent_covered))
 percent_covered<-as.vector(percent_covered)
-#df<-data.frame(id=id,interval=intervals,percent_covered=percent_covered)
 df<-data.frame(id=id,interval=intervals,metric="pct_cvd",value=percent_covered)
 df.all<-rbind(df.all,df)
 
@@ -108,7 +107,6 @@ if (!is.na(opt$listSplit)) {
 
     #remove pool from the df.all
     df.all <- df.all[df.all$pool != pool,]
-    #df_test <- df_test[df_test$pool != pool,]
 
     #append the pool
     to_plot[[i]] <- df.subset
@@ -154,7 +152,7 @@ for (df_plot in to_plot) {
     guides(x = "none") +
     xlab("interval") + ylab("depth")
   g2_list[[index]] <- g2
-  
+
   index = index + 1
 }
 
