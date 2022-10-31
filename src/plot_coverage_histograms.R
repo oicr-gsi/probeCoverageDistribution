@@ -92,18 +92,11 @@ df.all$pool<-bed[df.all$interval,]$pool
 to_plot <- list()
 
 if (!is.na(opt$listSplit)) {
-#if (!is.na(test)) {
-  list_to_split <- strsplit(opt$listSplit, split = ",")
-  #list_to_split <- strsplit(test, split = ",")
-  print(list_to_split)
   i = 1
 
   for (pool in list_to_split) {
-    print(pool)
-    print(nrow(df.all))
     #create a subset with only the pool
     df.subset <- df.all[df.all$pool == pool,]
-    print(nrow(df.subset))
 
     #remove pool from the df.all
     df.all <- df.all[df.all$pool != pool,]
