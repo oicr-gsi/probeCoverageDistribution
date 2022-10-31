@@ -11,12 +11,18 @@ workflow probeCoverageDistribution {
     File bed
     String outputFileNamePrefix
     String inputType
+    String? partition
   }
   parameter_meta {
-    fastqR1: "fastq file for read 1"
-    fastqR2: "fastq file for read 2"
+    fastqR1: "fastq file for read 1 (optional)."
+    fastqR2: "fastq file for read 2 (optional)."
+    bam: "Alignment file (optional)."
+    bamIndex: "Alignment file index."
     bed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
     outputFileNamePrefix: "Optional output prefix to prefix output file names with."
+    inputType: "fastq or bam to indicate type of input."
+    partition: "Comma separated string indicating pool(s) to be viewed separately in the plots (example: \"exome,pool_1\")."
+
   }
 
   if(inputType=="fastq" && defined(fastqR1) && defined(fastqR2)){
@@ -45,16 +51,31 @@ workflow probeCoverageDistribution {
       outputPrefix = outputFileNamePrefix
   }
 
-  call Rplot {
-    input:
-      coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
-      inputBed = bed,
-      outputPrefix = outputFileNamePrefix,
+
+  if(!defined(partition)){
+    call Rplot {
+      input:
+        coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
+        inputBed = bed,
+        outputPrefix = outputFileNamePrefix
+    }
+  }
+
+  if(defined(partition)){
+    #Array[String] indices = select_first([phiXindices,[]])
+    call Rplot as RplotPartioned {
+      input:
+        coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
+        inputBed = bed,
+        outputPrefix = outputFileNamePrefix,
+        partition = partition
+    }
   }
 
   call zipResults{
-    input: inFiles=Rplot.Rplots,
-    outputPrefix = outputFileNamePrefix
+    input:
+      inFiles= select_first([Rplot.Rplots,RplotPartioned.Rplots]),
+      outputPrefix = outputFileNamePrefix
   }
 
   output {
@@ -172,6 +193,7 @@ task Rplot {
     File inputBed
     File coverageHist
     String outputPrefix
+    String? partition
     Int jobMemory = 20
     Int timeout = 4
     String modules = "probe-coverage-distribution/1.0"
@@ -195,9 +217,9 @@ task Rplot {
 
   command <<<
     Rscript --vanilla /.mounts/labs/gsiprojects/gsi/gsiusers/blujantoro/wdl/TSprobeCoverage/probeCoverageDistribution/src/plot_coverage_histograms.R \
-    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix}
+    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} ~{"-l " + partition}
     #Rscript --vanilla $PROBE_COVERAGE_DISTRIBUTION_ROOT/plot_coverage_histograms.R \
-    #-b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix}
+    #-b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} ~{"-l " + partition}
   >>>
 
   runtime {
