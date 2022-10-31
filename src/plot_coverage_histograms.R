@@ -23,24 +23,35 @@ if (is.na(opt$cvgFile) || is.na(opt$bedFile) || is.na(opt$outputBasename)) {
 library(ggpubr)
 library(ggplot2)
 library(tidytext)
-
-#test
 options(bitmapType='cairo')
 
 #read bed file
 bed<-read.delim(file=opt$bedFile, sep="\t",header=F)
+#read coverage histogram
+hist<-read.delim(file=opt$cvgFile,sep="\t",as.is=T,header=F)
 
-colnames(bed)<-c("chrom","start","stop","pool")
+if (ncol(bed) == 3 && ncol(hist) == 7) {
+  #reorganize and add dummy pool for bed and hist when there are no pools in bedfile
+  colnames(bed)<-c("chrom","start","stop")
+  bed$pool <- "pool_1"
+  bed <- bed[, c("chrom","start","stop","pool")]
+  
+  colnames(hist)<-c("chrom","start","stop","depth","bases","size","proportion")
+  hist$pool <- "pool_1"
+  hist <- hist[, c("chrom","start","stop","pool","depth","bases","size","proportion")]
+  
+} else {
+  colnames(bed)<-c("chrom","start","stop","pool")
+  colnames(hist)<-c("chrom","start","stop","pool","depth","bases","size","proportion")
+}
+    
+
 bed<-bed[order(bed$pool,bed$chrom,bed$start),]
 rownames(bed)<-paste(bed$chrom,":",bed$start,"-",bed$stop,sep="")
 
 df.all<-NULL
 id<-opt$outputBasename
 
-#read coverage histogram
-hist<-read.delim(file=opt$cvgFile,sep="\t",as.is=T,header=F)
-
-colnames(hist)<-c("chrom","start","stop","pool","depth","bases","size","proportion")
 hist<-hist[hist$chrom != "all",]
 hist$interval<-paste(hist$chrom,":",hist$start,"-",hist$stop,sep="")
 
