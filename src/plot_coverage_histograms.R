@@ -92,6 +92,7 @@ df.all$pool<-bed[df.all$interval,]$pool
 to_plot <- list()
 
 if (!is.na(opt$listSplit)) {
+  list_to_split <- strsplit(opt$listSplit, split = ",")
   i = 1
 
   for (pool in list_to_split) {
