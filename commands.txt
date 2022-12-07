@@ -1,0 +1,35 @@
+## Commands
+This section lists command(s) run by the probeCoverageDistribution workflow
+
+* Running probeCoverageDistribution workflow
+
+Capture panels are defined by a set of intervals defined in a bed file. This workflow uses bedtools to obtain bam coverage of the set of intervals and produces summary plots to visualize probe coverage and assess performance. 
+
+Create genome file to use bedtools sorted to estimate coverage
+```
+    samtools view -H ~{inputBam} | \
+    grep @SQ | sed 's/@SQ\tSN:\|LN://g' \
+    > genome.txt
+```
+Calculate coverage using bedtools
+```
+    bedtools coverage -hist \
+    -a ~{inputBed} \
+    -b ~{inputBam} \
+    -sorted -g ~{genomeFile} \
+    > ~{outputPrefix}.cvghist.txt || echo "Bedtools failed to produce output" \
+    | rm ~{outputPrefix}.cvghist.txt
+    #use or "||" when command fails otherwise workflow succeeds on empty file
+```
+Run custom Rscript to plot coverage
+```
+    Rscript --vanilla $PROBE_COVERAGE_DISTRIBUTION_ROOT/plot_coverage_histograms.R \
+    -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} ~{"-l " + partition}
+```
+Zip plots
+```
+    set -euo pipefail
+    mkdir ~{outputPrefix}
+    cp -t ~{outputPrefix} ~{sep=' ' inFiles}
+    zip -qr ~{outputPrefix}.zip ~{outputPrefix}
+```
