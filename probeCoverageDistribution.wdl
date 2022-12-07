@@ -61,7 +61,6 @@ workflow probeCoverageDistribution {
   }
 
   if(defined(partition)){
-    #Array[String] indices = select_first([phiXindices,[]])
     call Rplot as RplotPartioned {
       input:
         coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
