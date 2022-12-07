@@ -70,7 +70,7 @@ workflow probeCoverageDistribution {
     }
   }
 
-  call zipResults{
+  call compressResults{
     input:
       inFiles= select_first([Rplot.Rplots,RplotPartioned.Rplots]),
       outputPrefix = outputFileNamePrefix
@@ -78,7 +78,7 @@ workflow probeCoverageDistribution {
 
   output {
     File cvgFile = calculateProbeCoverageDistribution.coverageHistogram
-    File plots = zipResults.zipArchive
+    File plots = compressResults.plots
   }
 
   meta {
@@ -91,7 +91,7 @@ workflow probeCoverageDistribution {
     }]
     output_meta: {
       cvgFile: "Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.",
-      plots: "A zip file of all the Rplots created by the workflow, which show interval panel coverage."
+      plots: "A compress file of all the Rplots created by the workflow, which show interval panel coverage."
     }
   }
 }
@@ -229,7 +229,7 @@ task Rplot {
   }
 }
 
-task zipResults {
+task compressResults {
 
   input {
     Array[File] inFiles
@@ -245,19 +245,18 @@ task zipResults {
   }
 
   meta {
-    description: "Gather plots into a .zip archive"
+    description: "Gather plots into a .tar.gz"
     output_meta: {
-      zipArchive: "ZIP archive file"
+      plots: "Compressed folder with plots"
     }
   }
 
-  # create a directory for the zip archive; allows unzip without exploding multiple files into the working directory
-
+  # create a directory to compress
   command <<<
     set -euo pipefail
     mkdir ~{outputPrefix}
     cp -t ~{outputPrefix} ~{sep=' ' inFiles}
-    zip -qr ~{outputPrefix}.zip ~{outputPrefix}
+    tar -zcvf "~{outputPrefix}_plots.tar.gz" "~{outputPrefix}"
   >>>
 
   runtime {
@@ -266,7 +265,7 @@ task zipResults {
   }
 
   output {
-    File zipArchive = "~{outputPrefix}.zip"
+    File plots = "~{outputPrefix}_plots.tar.gz"
   }
 
 }
