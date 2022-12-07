@@ -1,16 +1,13 @@
 # probeCoverageDistribution
 
-Workflow to calculate probe coverage
+Workflow to visualize probe coverage
 
 ## Overview
 
 ## Dependencies
 
 * [bedtools 2.27](https://bedtools.readthedocs.io/en/latest/content/bedtools-suite.html)
-* [bwa 0.7.12](https://github.com/lh3/bwa/archive/0.7.12.tar.gz)
-* [samtools 1.9](https://github.com/samtools/samtools/archive/0.1.19.tar.gz)
-* [cutadapt 1.8.3](https://cutadapt.readthedocs.io/en/v1.8.3/)
-* [slicer 0.3.0](https://github.com/OpenGene/slicer/archive/v0.3.0.tar.gz)
+
 
 ## Usage
 
@@ -24,18 +21,21 @@ java -jar cromwell.jar run probeCoverageDistribution.wdl --inputs inputs.json
 #### Required workflow parameters:
 Parameter|Value|Description
 ---|---|---
-`fastqR1`|File|fastq file for read 1
-`fastqR2`|File|fastq file for read 2
-`inputBed`|File|Target probes, genomic coordinates of the targeted regions in tab-delimited text format.
+`bed`|File|Target probes, genomic coordinates of the targeted regions in tab-delimited text format.
+`outputFileNamePrefix`|String|Optional output prefix to prefix output file names with.
+`inputType`|String|fastq or bam to indicate type of input.
 `bwaMem.runBwaMem_bwaRef`|String|The reference genome to align the sample with by BWA
 `bwaMem.runBwaMem_modules`|String|Required environment modules
-`bwaMem.readGroups`|String|Complete read group header line
 
 
 #### Optional workflow parameters:
 Parameter|Value|Default|Description
 ---|---|---|---
-`outputFileNamePrefix`|String|basename(fastqR1)|Optional output prefix to prefix output file names with.
+`fastqR1`|File?|None|fastq file for read 1 (optional).
+`fastqR2`|File?|None|fastq file for read 2 (optional).
+`bam`|File?|None|Alignment file (optional).
+`bamIndex`|File?|None|Alignment file index.
+`partition`|String?|None|Comma separated string indicating pool(s) to be viewed separately in the plots (example: "exome,pool_1").
 
 
 #### Optional task parameters:
@@ -66,48 +66,71 @@ Parameter|Value|Default|Description
 `bwaMem.countChunkSize_timeout`|Int|48|Hours before task timeout
 `bwaMem.countChunkSize_jobMemory`|Int|16|Memory allocated for this job
 `bwaMem.numChunk`|Int|1|number of chunks to split fastq file [1, no splitting]
-`bwaMem.doTrim`|Boolean|false|if true, adapters will be trimmed before alignment
 `bwaMem.trimMinLength`|Int|1|minimum length of reads to keep [1]
 `bwaMem.trimMinQuality`|Int|0|minimum quality of read ends to keep [0]
 `bwaMem.adapter1`|String|"AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC"|adapter sequence to trim from read 1 [AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC]
 `bwaMem.adapter2`|String|"AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"|adapter sequence to trim from read 2 [AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT]
+`getGenomeFile.jobMemory`|Int|10|Memory (in GB) allocated for job.
+`getGenomeFile.timeout`|Int|4|Maximum amount of time (in hours) the task can run for.
+`getGenomeFile.modules`|String|"samtools/1.14"|Environment module names and version to load (space separated) before command execution.
 `calculateProbeCoverageDistribution.jobMemory`|Int|10|Memory (in GB) allocated for job.
 `calculateProbeCoverageDistribution.timeout`|Int|4|Maximum amount of time (in hours) the task can run for.
 `calculateProbeCoverageDistribution.modules`|String|"bedtools/2.27"|Environment module names and version to load (space separated) before command execution.
+`Rplot.partition`|String?|None|Comma separated string indicating pool(s) to be viewed separately in the plots (example: "exome,pool_1").
+`Rplot.jobMemory`|Int|20|Memory (in GB) allocated for job.
+`Rplot.timeout`|Int|4|Maximum amount of time (in hours) the task can run for.
+`Rplot.modules`|String|"probe-coverage-distribution/2.0"|Environment module names and version to load (space separated) before command execution.
+`RplotPartioned.jobMemory`|Int|20|Memory (in GB) allocated for job.
+`RplotPartioned.timeout`|Int|4|Maximum amount of time (in hours) the task can run for.
+`RplotPartioned.modules`|String|"probe-coverage-distribution/2.0"|Environment module names and version to load (space separated) before command execution.
+`zipResults.jobMemory`|Int|12|Memory for the task, in gigabytes
+`zipResults.timeout`|Int|4|Timeout for the task, in hours
 
 
 ### Outputs
 
 Output | Type | Description
 ---|---|---
-`coverageHistogram`|File|Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.
+`cvgFile`|File|Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.
+`plots`|File|A zip file of all the Rplots created by the workflow, which show interval panel coverage.
 
 
-## Niassa + Cromwell
-
-This WDL workflow is wrapped in a Niassa workflow (https://github.com/oicr-gsi/pipedev/tree/master/pipedev-niassa-cromwell-workflow) so that it can used with the Niassa metadata tracking system (https://github.com/oicr-gsi/niassa).
-
-* Building
-```
-mvn clean install
-```
-
-* Testing
-```
-mvn clean verify \
--Djava_opts="-Xmx1g -XX:+UseG1GC -XX:+UseStringDeduplication" \
--DrunTestThreads=2 \
--DskipITs=false \
--DskipRunITs=false \
--DworkingDirectory=/path/to/tmp/ \
--DschedulingHost=niassa_oozie_host \
--DwebserviceUrl=http://niassa-url:8080 \
--DwebserviceUser=niassa_user \
--DwebservicePassword=niassa_user_password \
--Dcromwell-host=http://cromwell-url:8000
-```
-
-## Support
+## Commands
+ This section lists command(s) run by the probeCoverageDistribution workflow
+ 
+ * Running probeCoverageDistribution workflow
+ 
+ Capture panels are defined by a set of intervals defined in a bed file. This workflow uses bedtools to obtain bam coverage of the set of intervals and produces summary plots to visualize probe coverage and assess performance. 
+ 
+ Create genome file to use bedtools sorted to estimate coverage
+ ```
+     samtools view -H ~{inputBam} | \
+     grep @SQ | sed 's/@SQ\tSN:\|LN://g' \
+     > genome.txt
+ ```
+ Calculate coverage using bedtools
+ ```
+     bedtools coverage -hist \
+     -a ~{inputBed} \
+     -b ~{inputBam} \
+     -sorted -g ~{genomeFile} \
+     > ~{outputPrefix}.cvghist.txt || echo "Bedtools failed to produce output" \
+     | rm ~{outputPrefix}.cvghist.txt
+     #use or "||" when command fails otherwise workflow succeeds on empty file
+ ```
+ Run custom Rscript to plot coverage
+ ```
+     Rscript --vanilla $PROBE_COVERAGE_DISTRIBUTION_ROOT/plot_coverage_histograms.R \
+     -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} ~{"-l " + partition}
+ ```
+ Zip plots
+ ```
+     set -euo pipefail
+     mkdir ~{outputPrefix}
+     cp -t ~{outputPrefix} ~{sep=' ' inFiles}
+     zip -qr ~{outputPrefix}.zip ~{outputPrefix}
+ ```
+ ## Support
 
 For support, please file an issue on the [Github project](https://github.com/oicr-gsi) or send an email to gsi@oicr.on.ca .
 
