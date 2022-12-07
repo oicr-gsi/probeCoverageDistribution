@@ -5,7 +5,7 @@
     "arguments": {
       "probeCoverageDistribution.bam": {
         "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam",
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/TEST_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam",
           "externalIds": [
             {
               "id": "TEST",
@@ -17,7 +17,7 @@
       },
       "probeCoverageDistribution.bamIndex": {
         "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam",
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/TEST_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam.bai",
           "externalIds": [
             {
               "id": "TEST",
@@ -82,7 +82,7 @@
       "probeCoverageDistribution.getGenomeFile.timeout": null,
       "probeCoverageDistribution.getGenomeFile.modules": null,
       "probeCoverageDistribution.inputType": "bam",
-      "probeCoverageDistribution.outputFileNamePrefix": "LLDM_0031_Ln_P_PE_307_TS",
+      "probeCoverageDistribution.outputFileNamePrefix": "TEST_0031_Ln_P_PE_307_TS",
       "probeCoverageDistribution.partition": null,
       "probeCoverageDistribution.Rplot.jobMemory": null,
       "probeCoverageDistribution.Rplot.timeout": null,
@@ -131,6 +131,142 @@
         "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
         "metrics_compare": "@CHECKOUT@/tests/compare.sh",
         "output_metrics": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/output_metrics/test_01.metrics",
+        "type": "script"
+      }
+    ]
+  },
+  {
+    "id": "test_02",
+    "description": "probeCoverageDistribution workflow test on bam input with readily panel",
+    "arguments": {
+      "probeCoverageDistribution.bam": {
+        "contents": {
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/TEST_0010_Ct_T_PE_416_TS_LIB-15-0022_Pl3_210727_A00469_0191_AH7MVVDSX2_2_CACGTTGT-ACACCTCA.bam",
+          "externalIds": [
+            {
+              "id": "TEST",
+              "provider": "TEST"
+            }
+          ]
+        },
+        "type": "EXTERNAL"
+      },
+      "probeCoverageDistribution.bamIndex": {
+        "contents": {
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/TEST_0010_Ct_T_PE_416_TS_LIB-15-0022_Pl3_210727_A00469_0191_AH7MVVDSX2_2_CACGTTGT-ACACCTCA.bam.bai",
+          "externalIds": [
+            {
+              "id": "TEST",
+              "provider": "TEST"
+            }
+          ]
+        },
+        "type": "EXTERNAL"
+      },
+      "probeCoverageDistribution.bed": {
+        "contents": {
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/READILY.probes_sorted.hg38.bed",
+          "externalIds": [
+            {
+              "id": "TEST",
+              "provider": "TEST"
+            }
+          ]
+        },
+        "type": "EXTERNAL"
+      },
+      "probeCoverageDistribution.calculateProbeCoverageDistribution.jobMemory": null,
+      "probeCoverageDistribution.calculateProbeCoverageDistribution.timeout": null,
+      "probeCoverageDistribution.calculateProbeCoverageDistribution.modules": null,
+      "probeCoverageDistribution.calculateProbeCoverageDistribution.multipleBed": null,
+      "probeCoverageDistribution.bwaMem.adapter1": null,
+      "probeCoverageDistribution.bwaMem.adapter2": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimmingLog_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimmingLog_timeout": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimming_addParam": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimming_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimming_modules": null,
+      "probeCoverageDistribution.bwaMem.adapterTrimming_timeout": null,
+      "probeCoverageDistribution.bwaMem.bamMerge_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.bamMerge_modules": null,
+      "probeCoverageDistribution.bwaMem.bamMerge_timeout": null,
+      "probeCoverageDistribution.bwaMem.countChunkSize_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.countChunkSize_timeout": null,
+      "probeCoverageDistribution.bwaMem.doTrim": true,
+      "probeCoverageDistribution.bwaMem.indexBam_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.indexBam_modules": null,
+      "probeCoverageDistribution.bwaMem.indexBam_timeout": null,
+      "probeCoverageDistribution.bwaMem.numChunk": null,
+      "probeCoverageDistribution.bwaMem.readGroups": null,
+      "probeCoverageDistribution.bwaMem.runBwaMem_addParam": null,
+      "probeCoverageDistribution.bwaMem.runBwaMem_bwaRef": "",
+      "probeCoverageDistribution.bwaMem.runBwaMem_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.runBwaMem_modules": "",
+      "probeCoverageDistribution.bwaMem.runBwaMem_threads": null,
+      "probeCoverageDistribution.bwaMem.runBwaMem_timeout": null,
+      "probeCoverageDistribution.bwaMem.slicerR1_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.slicerR1_modules": null,
+      "probeCoverageDistribution.bwaMem.slicerR1_timeout": null,
+      "probeCoverageDistribution.bwaMem.slicerR2_jobMemory": null,
+      "probeCoverageDistribution.bwaMem.slicerR2_modules": null,
+      "probeCoverageDistribution.bwaMem.slicerR2_timeout": null,
+      "probeCoverageDistribution.bwaMem.trimMinLength": null,
+      "probeCoverageDistribution.bwaMem.trimMinQuality": null,
+      "probeCoverageDistribution.fastqR1": null,
+      "probeCoverageDistribution.fastqR2": null,
+      "probeCoverageDistribution.getGenomeFile.jobMemory": null,
+      "probeCoverageDistribution.getGenomeFile.timeout": null,
+      "probeCoverageDistribution.getGenomeFile.modules": null,
+      "probeCoverageDistribution.inputType": "bam",
+      "probeCoverageDistribution.outputFileNamePrefix": "TEST_0010_Ct_T_PE_416_TS",
+      "probeCoverageDistribution.partition": null,
+      "probeCoverageDistribution.Rplot.jobMemory": null,
+      "probeCoverageDistribution.Rplot.timeout": null,
+      "probeCoverageDistribution.Rplot.modules": null,
+      "probeCoverageDistribution.Rplot.partition": null,
+      "probeCoverageDistribution.RplotPartioned.jobMemory": null,
+      "probeCoverageDistribution.RplotPartioned.timeout": null,
+      "probeCoverageDistribution.RplotPartioned.modules": null,
+      "probeCoverageDistribution.splitBed.jobMemory": null,
+      "probeCoverageDistribution.splitBed.timeout": null,
+      "probeCoverageDistribution.zipResults.jobMemory": null,
+      "probeCoverageDistribution.zipResults.timeout": null
+    },
+    "engineArguments": {
+      "write_to_cache": false,
+      "read_from_cache": false
+    },
+    "metadata": {
+      "probeCoverageDistribution.cvgFiles": {
+        "contents": [
+          {
+            "outputDirectory": "@SCRATCH@/@DATE@_Workflow_probeCoverageDistribution_test_01_@JENKINSID@"
+          }
+        ],
+        "type": "ALL"
+      },
+      "probeCoverageDistribution.cvgFile": {
+        "contents": [
+          {
+            "outputDirectory": "@SCRATCH@/@DATE@_Workflow_probeCoverageDistribution_test_01_@JENKINSID@"
+          }
+        ],
+        "type": "ALL"
+      },
+      "probeCoverageDistribution.plots": {
+        "contents": [
+          {
+            "outputDirectory": "@SCRATCH@/@DATE@_Workflow_probeCoverageDistribution_test_01_@JENKINSID@"
+          }
+        ],
+        "type": "ALL"
+      }
+    },
+    "validators": [
+      {
+        "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
+        "metrics_compare": "@CHECKOUT@/tests/compare.sh",
+        "output_metrics": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/output_metrics/test_02.metrics",
         "type": "script"
       }
     ]
