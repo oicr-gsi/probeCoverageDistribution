@@ -93,8 +93,8 @@
       "probeCoverageDistribution.RplotPartioned.modules": null,
       "probeCoverageDistribution.splitBed.jobMemory": null,
       "probeCoverageDistribution.splitBed.timeout": null,
-      "probeCoverageDistribution.zipResults.jobMemory": null,
-      "probeCoverageDistribution.zipResults.timeout": null
+      "probeCoverageDistribution.compressResults.jobMemory": null,
+      "probeCoverageDistribution.compressResults.timeout": null
     },
     "engineArguments": {
       "write_to_cache": false,
@@ -229,8 +229,8 @@
       "probeCoverageDistribution.RplotPartioned.modules": null,
       "probeCoverageDistribution.splitBed.jobMemory": null,
       "probeCoverageDistribution.splitBed.timeout": null,
-      "probeCoverageDistribution.zipResults.jobMemory": null,
-      "probeCoverageDistribution.zipResults.timeout": null
+      "probeCoverageDistribution.compressResults.jobMemory": null,
+      "probeCoverageDistribution.compressResults.timeout": null
     },
     "engineArguments": {
       "write_to_cache": false,
