@@ -196,8 +196,7 @@ task Rplot {
     String? partition
     Int jobMemory = 20
     Int timeout = 4
-    String modules = "probe-coverage-distribution/1.0"
-    #String modules = "probe-coverage-distribution/2.0"
+    String modules = "probe-coverage-distribution/2.0"
   }
 
   parameter_meta {
@@ -216,10 +215,8 @@ task Rplot {
   }
 
   command <<<
-    Rscript --vanilla /.mounts/labs/gsiprojects/gsi/gsiusers/blujantoro/wdl/TSprobeCoverage/probeCoverageDistribution/src/plot_coverage_histograms.R \
+    Rscript --vanilla $PROBE_COVERAGE_DISTRIBUTION_ROOT/plot_coverage_histograms.R \
     -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} ~{"-l " + partition}
-    #Rscript --vanilla $PROBE_COVERAGE_DISTRIBUTION_ROOT/plot_coverage_histograms.R \
-    #-b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} ~{"-l " + partition}
   >>>
 
   runtime {
