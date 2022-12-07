@@ -22,7 +22,6 @@ workflow probeCoverageDistribution {
     outputFileNamePrefix: "Optional output prefix to prefix output file names with."
     inputType: "fastq or bam to indicate type of input."
     partition: "Comma separated string indicating pool(s) to be viewed separately in the plots (example: \"exome,pool_1\")."
-
   }
 
   if(inputType=="fastq" && defined(fastqR1) && defined(fastqR2)){
@@ -206,6 +205,7 @@ task Rplot {
     jobMemory: "Memory (in GB) allocated for job."
     timeout: "Maximum amount of time (in hours) the task can run for."
     modules: "Environment module names and version to load (space separated) before command execution."
+    partition: "Comma separated string indicating pool(s) to be viewed separately in the plots (example: \"exome,pool_1\")."
   }
 
   meta {
