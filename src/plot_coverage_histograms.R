@@ -131,8 +131,8 @@ for (df_plot in to_plot) {
 
   ############# Percent coverage
   g1<-ggplot(df_plot[df_plot$metric=="pct_cvd",], aes(x=as.factor(pool), y=value, col=pool)) +
-    geom_boxplot(fill="slateblue", alpha=0.2) +
-    geom_jitter() +
+    geom_boxplot(fill="slateblue", alpha=0.2, outlier.shape = NA) +
+    geom_jitter(alpha=0.2) +
     xlab("pool") + ylab("proportion")+
     theme(axis.text.x = element_blank()) #+
   g1_list[[index]] <- g1
