@@ -8,3 +8,6 @@ cd $1
 
 #find all files, return their md5sums to std out
 cat *cvghist.txt | md5sum
+
+#get the contents of the compressed directory with the plots
+tar --list --file *tar.gz
