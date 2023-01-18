@@ -1,12 +1,18 @@
 # probeCoverageDistribution
 
-Workflow to visualize probe coverage
+Workflow to calculate probe coverage
 
 ## Overview
 
 ## Dependencies
 
 * [bedtools 2.27](https://bedtools.readthedocs.io/en/latest/content/bedtools-suite.html)
+* [samtools 1.14](http://www.htslib.org/)
+* [optparse](https://cran.r-project.org/web/packages/optparse/index.html)
+* [ggpubr](https://cran.r-project.org/web/packages/ggpubr/index.html)
+* [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html)
+* [tidytext](https://cran.r-project.org/web/packages/tidytext/)
+* [r 3.6.1](https://cran.r-project.org/)
 
 
 ## Usage
@@ -83,8 +89,8 @@ Parameter|Value|Default|Description
 `RplotPartioned.jobMemory`|Int|20|Memory (in GB) allocated for job.
 `RplotPartioned.timeout`|Int|4|Maximum amount of time (in hours) the task can run for.
 `RplotPartioned.modules`|String|"probe-coverage-distribution/2.0"|Environment module names and version to load (space separated) before command execution.
-`zipResults.jobMemory`|Int|12|Memory for the task, in gigabytes
-`zipResults.timeout`|Int|4|Timeout for the task, in hours
+`compressResults.jobMemory`|Int|12|Memory for the task, in gigabytes
+`compressResults.timeout`|Int|4|Timeout for the task, in hours
 
 
 ### Outputs
@@ -92,7 +98,7 @@ Parameter|Value|Default|Description
 Output | Type | Description
 ---|---|---
 `cvgFile`|File|Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.
-`plots`|File|A zip file of all the Rplots created by the workflow, which show interval panel coverage.
+`plots`|File|A compress file of all the Rplots created by the workflow, which show interval panel coverage.
 
 
 ## Commands
@@ -123,12 +129,12 @@ Output | Type | Description
      Rscript --vanilla $PROBE_COVERAGE_DISTRIBUTION_ROOT/plot_coverage_histograms.R \
      -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} ~{"-l " + partition}
  ```
- Zip plots
+ Compress plots
  ```
      set -euo pipefail
      mkdir ~{outputPrefix}
      cp -t ~{outputPrefix} ~{sep=' ' inFiles}
-     zip -qr ~{outputPrefix}.zip ~{outputPrefix}
+     tar -zcvf "~{outputPrefix}_plots.tar.gz" "~{outputPrefix}"
  ```
  ## Support
 

@@ -26,10 +26,10 @@ Run custom Rscript to plot coverage
     Rscript --vanilla $PROBE_COVERAGE_DISTRIBUTION_ROOT/plot_coverage_histograms.R \
     -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} ~{"-l " + partition}
 ```
-Zip plots
+Compress plots
 ```
     set -euo pipefail
     mkdir ~{outputPrefix}
     cp -t ~{outputPrefix} ~{sep=' ' inFiles}
-    zip -qr ~{outputPrefix}.zip ~{outputPrefix}
+    tar -zcvf "~{outputPrefix}_plots.tar.gz" "~{outputPrefix}"
 ```

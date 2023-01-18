@@ -88,6 +88,30 @@ workflow probeCoverageDistribution {
     dependencies: [{
       name: "bedtools/2.27",
       url: "https://bedtools.readthedocs.io/en/latest/content/bedtools-suite.html"
+    },
+    {
+      name: "samtools/1.14",
+      url: "http://www.htslib.org/"
+    },
+    {
+      name: "optparse",
+      url: "https://cran.r-project.org/web/packages/optparse/index.html"
+    },
+    {
+      name: "ggpubr",
+      url: "https://cran.r-project.org/web/packages/ggpubr/index.html"
+    },
+    {
+      name: "ggplot2",
+      url: "https://cran.r-project.org/web/packages/ggplot2/index.html"
+    },
+    {
+      name: "tidytext",
+      url: "https://cran.r-project.org/web/packages/tidytext/"
+    },
+    {
+      name: "r/3.6.1",
+      url: "https://cran.r-project.org/"
     }]
     output_meta: {
       cvgFile: "Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.",
