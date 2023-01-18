@@ -1,6 +1,6 @@
 # probeCoverageDistribution
 
-Workflow to calculate probe coverage
+Workflow to visualize probe coverage
 
 ## Overview
 
