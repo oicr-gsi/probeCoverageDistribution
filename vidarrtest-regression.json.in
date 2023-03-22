@@ -152,7 +152,7 @@
         },
         "type": "EXTERNAL"
       },
-      "probeCoverageDistribution.bedFile": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/READILY.probes_sorted.hg38.bed",
+      "probeCoverageDistribution.bed": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/READILY.probes_sorted.hg38.bed",
       "probeCoverageDistribution.calculateProbeCoverageDistribution.jobMemory": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.timeout": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.modules": null,
