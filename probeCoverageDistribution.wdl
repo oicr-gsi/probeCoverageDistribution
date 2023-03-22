@@ -8,7 +8,7 @@ workflow probeCoverageDistribution {
     File? fastqR2
     File? bam
     File? bamIndex
-    File bedFile
+    String bed
     String outputFileNamePrefix
     String inputType
     String? partition
@@ -17,8 +17,8 @@ workflow probeCoverageDistribution {
     fastqR1: "fastq file for read 1 (optional)."
     fastqR2: "fastq file for read 2 (optional)."
     bam: "Alignment file (optional)."
-    bamIndex: "Alignment file index."
-    bedFile: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
+    bamIndex: "Alignment file index (optional)."
+    bed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
     outputFileNamePrefix: "Optional output prefix to prefix output file names with."
     inputType: "fastq or bam to indicate type of input."
     partition: "Comma separated string indicating pool(s) to be viewed separately in the plots (example: \"exome,pool_1\")."
@@ -45,7 +45,7 @@ workflow probeCoverageDistribution {
     input:
       inputBam = select_first([bwaMem.bwaMemBam,bam]),
       inputBai = select_first([bwaMem.bwaMemIndex,bamIndex]),
-      inputBed = bedFile,
+      inputBed = bed,
       genomeFile = getGenomeFile.genomeFile,
       outputPrefix = outputFileNamePrefix
   }
@@ -55,7 +55,7 @@ workflow probeCoverageDistribution {
     call Rplot {
       input:
         coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
-        inputBed = bedFile,
+        inputBed = bed,
         outputPrefix = outputFileNamePrefix
     }
   }
@@ -64,7 +64,7 @@ workflow probeCoverageDistribution {
     call Rplot as RplotPartioned {
       input:
         coverageHist = calculateProbeCoverageDistribution.coverageHistogram,
-        inputBed = bedFile,
+        inputBed = bed,
         outputPrefix = outputFileNamePrefix,
         partition = partition
     }
