@@ -8,7 +8,7 @@ workflow probeCoverageDistribution {
     File? fastqR2
     File? bam
     File? bamIndex
-    File bed
+    String bed
     String outputFileNamePrefix
     String inputType
     String? partition
@@ -17,7 +17,7 @@ workflow probeCoverageDistribution {
     fastqR1: "fastq file for read 1 (optional)."
     fastqR2: "fastq file for read 2 (optional)."
     bam: "Alignment file (optional)."
-    bamIndex: "Alignment file index."
+    bamIndex: "Alignment file index (optional)."
     bed: "Target probes, genomic coordinates of the targeted regions in tab-delimited text format."
     outputFileNamePrefix: "Optional output prefix to prefix output file names with."
     inputType: "fastq or bam to indicate type of input."

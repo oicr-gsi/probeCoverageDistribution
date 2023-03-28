@@ -27,7 +27,7 @@ java -jar cromwell.jar run probeCoverageDistribution.wdl --inputs inputs.json
 #### Required workflow parameters:
 Parameter|Value|Description
 ---|---|---
-`bed`|File|Target probes, genomic coordinates of the targeted regions in tab-delimited text format.
+`bed`|String|File path to target probes, genomic coordinates of the targeted regions in tab-delimited text format.
 `outputFileNamePrefix`|String|Optional output prefix to prefix output file names with.
 `inputType`|String|fastq or bam to indicate type of input.
 `bwaMem.runBwaMem_bwaRef`|String|The reference genome to align the sample with by BWA
