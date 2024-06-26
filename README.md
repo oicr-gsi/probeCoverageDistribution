@@ -40,7 +40,7 @@ Parameter|Value|Default|Description
 `fastqR1`|File?|None|fastq file for read 1 (optional).
 `fastqR2`|File?|None|fastq file for read 2 (optional).
 `bam`|File?|None|Alignment file (optional).
-`bamIndex`|File?|None|Alignment file index.
+`bamIndex`|File?|None|Alignment file index (optional).
 `partition`|String?|None|Comma separated string indicating pool(s) to be viewed separately in the plots (example: "exome,pool_1").
 
 
@@ -95,27 +95,30 @@ Parameter|Value|Default|Description
 
 ### Outputs
 
-Output | Type | Description
----|---|---
-`cvgFile`|File|Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.
-`plots`|File|A compress file of all the Rplots created by the workflow, which show interval panel coverage.
+Output | Type | Description | Labels
+---|---|---|---
+`cvgFile`|File|Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.|vidarr_label: cvgFile
+`plots`|File|A compress file of all the Rplots created by the workflow, which show interval panel coverage.|vidarr_label: plots
 
 
 ## Commands
- This section lists command(s) run by the probeCoverageDistribution workflow
+This section lists command(s) run by the probeCoverageDistribution workflow
  
- * Running probeCoverageDistribution workflow
+* Running probeCoverageDistribution workflow
  
- Capture panels are defined by a set of intervals defined in a bed file. This workflow uses bedtools to obtain bam coverage of the set of intervals and produces summary plots to visualize probe coverage and assess performance. 
+Capture panels are defined by a set of intervals defined in a bed file. This workflow uses bedtools to obtain bam coverage of the set of intervals and produces summary plots to visualize probe coverage and assess performance. 
  
- Create genome file to use bedtools sorted to estimate coverage
- ```
+### Create genome file to use bedtools sorted to estimate coverage
+
+```
      samtools view -H ~{inputBam} | \
      grep @SQ | sed 's/@SQ\tSN:\|LN://g' \
      > genome.txt
- ```
- Calculate coverage using bedtools
- ```
+```
+
+### Calculate coverage using bedtools
+
+```
      bedtools coverage -hist \
      -a ~{inputBed} \
      -b ~{inputBam} \
@@ -123,20 +126,24 @@ Output | Type | Description
      > ~{outputPrefix}.cvghist.txt || echo "Bedtools failed to produce output" \
      | rm ~{outputPrefix}.cvghist.txt
      #use or "||" when command fails otherwise workflow succeeds on empty file
- ```
- Run custom Rscript to plot coverage
- ```
+```
+
+### Run custom Rscript to plot coverage
+
+```
      Rscript --vanilla $PROBE_COVERAGE_DISTRIBUTION_ROOT/plot_coverage_histograms.R \
      -b ~{inputBed} -c ~{coverageHist} -o ~{outputPrefix} ~{"-l " + partition}
- ```
- Compress plots
- ```
+```
+
+### Compress plots
+
+```
      set -euo pipefail
      mkdir ~{outputPrefix}
      cp -t ~{outputPrefix} ~{sep=' ' inFiles}
      tar -zcvf "~{outputPrefix}_plots.tar.gz" "~{outputPrefix}"
- ```
- ## Support
+```
+## Support
 
 For support, please file an issue on the [Github project](https://github.com/oicr-gsi) or send an email to gsi@oicr.on.ca .
 
