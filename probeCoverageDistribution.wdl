@@ -114,9 +114,15 @@ workflow probeCoverageDistribution {
       url: "https://cran.r-project.org/"
     }]
     output_meta: {
-      cvgFile: "Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.",
-      plots: "A compress file of all the Rplots created by the workflow, which show interval panel coverage."
+    cvgFile: {
+        description: "Coverage histogram, tab-delimited text file reporting the coverage at each feature in the bed file.",
+        vidarr_label: "cvgFile"
+    },
+    plots: {
+        description: "A compress file of all the Rplots created by the workflow, which show interval panel coverage.",
+        vidarr_label: "plots"
     }
+}
   }
 }
 
