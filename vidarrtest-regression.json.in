@@ -5,7 +5,7 @@
     "arguments": {
       "probeCoverageDistribution.bam": {
         "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/TEST_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam",
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/test_inputs/TEST_01.bam",
           "externalIds": [
             {
               "id": "TEST",
@@ -17,7 +17,7 @@
       },
       "probeCoverageDistribution.bamIndex": {
         "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/TEST_0031_Ln_P_PE_307_TS_LS_23_DV1_210706_M06816_0167_000000000-DCLL2_1_CTTACCTG-CTCATTGC.bam.bai",
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/test_inputs/TEST_01.bam.bai",
           "externalIds": [
             {
               "id": "TEST",
@@ -27,7 +27,7 @@
         },
         "type": "EXTERNAL"
       },
-      "probeCoverageDistribution.bed": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/LLDM.EXOME.TS.hg19.bed",
+      "probeCoverageDistribution.bed": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/test_inputs/LLDM.EXOME.TS.hg19.bed",
       "probeCoverageDistribution.calculateProbeCoverageDistribution.jobMemory": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.timeout": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.modules": null,
@@ -71,7 +71,7 @@
       "probeCoverageDistribution.getGenomeFile.timeout": null,
       "probeCoverageDistribution.getGenomeFile.modules": null,
       "probeCoverageDistribution.inputType": "bam",
-      "probeCoverageDistribution.outputFileNamePrefix": "TEST_0031_Ln_P_PE_307_TS",
+      "probeCoverageDistribution.outputFileNamePrefix": "TEST_01_TS",
       "probeCoverageDistribution.partition": null,
       "probeCoverageDistribution.Rplot.jobMemory": null,
       "probeCoverageDistribution.Rplot.timeout": null,
@@ -119,7 +119,7 @@
       {
         "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
         "metrics_compare": "@CHECKOUT@/tests/compare.sh",
-        "output_metrics": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/output_metrics/test_01.metrics",
+        "output_metrics": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/output_metrics/workflow_test_01.metrics",
         "type": "script"
       }
     ]
@@ -130,7 +130,7 @@
     "arguments": {
       "probeCoverageDistribution.bam": {
         "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/TEST_0010_Ct_T_PE_416_TS_LIB-15-0022_Pl3_210727_A00469_0191_AH7MVVDSX2_2_CACGTTGT-ACACCTCA.bam",
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/test_inputs/TEST_02.bam",
           "externalIds": [
             {
               "id": "TEST",
@@ -142,7 +142,7 @@
       },
       "probeCoverageDistribution.bamIndex": {
         "contents": {
-          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/TEST_0010_Ct_T_PE_416_TS_LIB-15-0022_Pl3_210727_A00469_0191_AH7MVVDSX2_2_CACGTTGT-ACACCTCA.bam.bai",
+          "configuration": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/test_inputs/TEST_02.bam.bai",
           "externalIds": [
             {
               "id": "TEST",
@@ -152,7 +152,7 @@
         },
         "type": "EXTERNAL"
       },
-      "probeCoverageDistribution.bed": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/input_data/READILY.probes_sorted.hg38.bed",
+      "probeCoverageDistribution.bed": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/test_inputs/READILY.probes_sorted.hg38.bed",
       "probeCoverageDistribution.calculateProbeCoverageDistribution.jobMemory": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.timeout": null,
       "probeCoverageDistribution.calculateProbeCoverageDistribution.modules": null,
@@ -196,7 +196,7 @@
       "probeCoverageDistribution.getGenomeFile.timeout": null,
       "probeCoverageDistribution.getGenomeFile.modules": null,
       "probeCoverageDistribution.inputType": "bam",
-      "probeCoverageDistribution.outputFileNamePrefix": "TEST_0010_Ct_T_PE_416_TS",
+      "probeCoverageDistribution.outputFileNamePrefix": "TEST_02_TS",
       "probeCoverageDistribution.partition": null,
       "probeCoverageDistribution.Rplot.jobMemory": null,
       "probeCoverageDistribution.Rplot.timeout": null,
@@ -244,7 +244,7 @@
       {
         "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
         "metrics_compare": "@CHECKOUT@/tests/compare.sh",
-        "output_metrics": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/output_metrics/test_02.metrics",
+        "output_metrics": "/.mounts/labs/gsi/testdata/probeCoverageDistribution/output_metrics/workflow_test_02.metrics",
         "type": "script"
       }
     ]
